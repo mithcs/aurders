@@ -12,9 +12,9 @@ source=("{source}")
 sha256sums=("{sha256sums}")
 
 build() {
-  cd "$srcdir/$pkgname-$pkgver-$pkgrel"
+    echo "Building..."
 }
 
 package() {
-  cd "$srcdir/$pkgname-$pkgver-$pkgrel"
+    echo "Packaging..."
 }
