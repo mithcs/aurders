@@ -97,7 +97,7 @@ pub fn add_to_repo(pkgname: &String) {
 }
 
 /// setup_repo sets up the repository to publish
-pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
+pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String, architecture: &String) {
     println!("\nSetting up git repository...");
 
     match clone_aur_repo(&pkgname) {
@@ -115,7 +115,11 @@ pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
         Err(e) => eprintln!("Failed to copy .SRCINFO: {}.", e),
     };
 
-    let arch = get_arch();
+    let mut arch = get_arch();
+
+    if *architecture == "any".to_string() {
+        arch = "any".to_string();
+    }
 
     match fs::copy(
         format!("{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgver, &pkgrel, &arch),
@@ -145,7 +149,7 @@ pub fn commit_to_repo() {
     match output {
         Ok(op) => {
             if op.status.success() {
-                println!("Executed git commit successfully.");
+                println!("\nExecuted git commit successfully.");
             } else {
                 if let Ok(stderr) = String::from_utf8(op.stderr) {
                     eprintln!("git commit failed: {}.", stderr);

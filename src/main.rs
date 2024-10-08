@@ -31,7 +31,7 @@ fn main() {
 
     execute_makepkg();
 
-    setup_repo(&pkginfo.pkgname, &pkginfo.pkgver, &pkginfo.pkgrel);
+    setup_repo(&pkginfo.pkgname, &pkginfo.pkgver, &pkginfo.pkgrel, &pkginfo.arch);
     add_to_repo(&pkginfo.pkgname);
 
     let want_to_commit = input_bool("Do you want to commit changes in git repository?(y/n): ");

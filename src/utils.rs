@@ -151,7 +151,7 @@ pub fn select_arch() -> Option<String> {
     io::stdout().flush().unwrap(); // Flush the output correctly
 
     loop {
-        print!("  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually [5] Enter manually (more than 1)\n> ");
+        print!("  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n> ");
         io::stdout().flush().unwrap();
         let mut input = String::new();
 
@@ -170,17 +170,6 @@ pub fn select_arch() -> Option<String> {
             2 => return Some("i686".to_string()),
             3 => return Some("any".to_string()),
             4 => {
-                let mut arch = String::new();
-                print!("Enter target architecture: ");
-                io::stdout().flush().unwrap();
-
-                io::stdin()
-                    .read_line(&mut arch)
-                    .expect("Failed to get input.");
-
-                return Some(arch.trim().to_string());
-            }
-            5 => {
                 let mut arch = String::new();
                 print!("Enter target architecture: ");
                 io::stdout().flush().unwrap();
