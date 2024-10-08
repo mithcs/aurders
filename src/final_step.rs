@@ -15,6 +15,7 @@ pub fn execute_makepkg() {
         Err(e) => eprintln!("Failed to change current directory: {}.", e),
     };
 
+    println!("Executing makepkg...");
     let output = Command::new("makepkg").output();
 
     match output {
@@ -98,7 +99,7 @@ pub fn add_to_repo(pkgname: &String) {
 
     let mut commit_message = String::new();
 
-    println!("Enter commit message");
+    println!("\nEnter commit message");
     print!("> ");
     std::io::stdout().flush().unwrap();
 
@@ -155,6 +156,7 @@ pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
 
     let arch = match env::consts::ARCH {
         "x86_64" => "x86_64",
+        // *Untested*
         "x86" => "i686", // arch dropped support in 2017, unofficial port is available
         "arm" => "arm",  // unofficial port is available
         "aarch64" => "aarch64", // again, unofficial port is available (ARM)

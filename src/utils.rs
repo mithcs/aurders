@@ -177,6 +177,8 @@ fn fetch_data(url: String, filename: String) -> Result<(), Box<dyn std::error::E
 }
 
 /// get_templates retrieve the template by calling fetch_data() correctly
+// not to be confused with get_template functions in {pkgbuild, srcinfo}, they retrieve local
+// templates from templates/ directory.
 pub fn get_templates() {
     let url = "https://github.com/miteshhc/aurders/releases/download/template/templates.tar.gz";
     let filename = "templates.tar.gz";
@@ -255,6 +257,8 @@ pub fn get_source() -> Option<String> {
         "Y" | "y" => {
             let mut source = String::new();
             print!("\nSource > ");
+            io::stdout().flush().unwrap();
+
             match io::stdin().read_line(&mut source) {
                 Ok(_) => (),
                 Err(e) => {
