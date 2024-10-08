@@ -49,7 +49,9 @@ asked for the source.
 
 
 ## Contributing
-Contributions, issues, pull requests and suggestions are welcome!
+We welcome contributions of all kinds! Whether you're fixing bugs, improving
+documentation, adding features, or even suggesting ideas, your help is greatly
+appreciated.
 
 ## LICENSE
 Distributed under the MIT license. See [LICENSE](./LICENSE) for more infomation.
