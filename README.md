@@ -46,6 +46,7 @@ asked for the source.
 - [ ] Fix implementation for copying package
 - [ ] Completely implement different methods for setting source(s)
 - [ ] Test untested features
+- [ ] Add `provides`, `conflicts` and `optdepends` in PKGBUILD
 
 
 ## Contributing
