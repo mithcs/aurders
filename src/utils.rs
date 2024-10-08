@@ -1,7 +1,6 @@
 //! utils module includes all the utlity and helper functions
 use std::fs::{self, remove_file, File};
-use std::io::Cursor;
-use std::io::{self, ErrorKind, Write};
+use std::io::{self, Cursor, ErrorKind, Write};
 use std::path::{Path, PathBuf};
 use std::process::exit;
 
@@ -10,8 +9,7 @@ use flate2::write::GzEncoder;
 use flate2::Compression;
 use reqwest;
 use sha256::try_digest;
-use tar::Archive;
-use tar::Builder;
+use tar::{Archive, Builder};
 
 /// input_string is a helper function to get string input from user efficiently
 pub fn input_string(prompt: &str, default: &str) -> String {

@@ -1,10 +1,8 @@
 //! I (mitesh) could not think of any name for this module. And therefore, final_step exists. I'll
 //! think of something ASAP and change this, if I remember to do so.
-use std::env;
-use std::fs;
-use std::io::BufRead;
-use std::io::{self, Write};
+use std::io::{self, BufRead};
 use std::process::Command;
+use std::{env, fs};
 
 use crate::utils::dead;
 use crate::utils::dead_probably;

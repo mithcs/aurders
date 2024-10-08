@@ -9,7 +9,10 @@ use std::io::Write;
 pub fn generate_srcinfo(pkginfo: &Information) {
     let template = get_template();
     let srcinfo: String;
-    let source = format!("{}-{}-{}.tar.gz", &pkginfo.pkgname, &pkginfo.pkgver, &pkginfo.pkgrel);
+    let source = format!(
+        "{}-{}-{}.tar.gz",
+        &pkginfo.pkgname, &pkginfo.pkgver, &pkginfo.pkgrel
+    );
 
     match template {
         Ok(output) => {
