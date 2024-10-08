@@ -12,9 +12,9 @@ aurders is a simple helper for developers to easily upload their packages to
 Arch User Repository.
 
 ## TODO
-[ ] Add support for multiple data sources
-[ ] Allow external sources
-[ ] Allow users to add multiple dependencies easily
+- [ ] Add support for multiple data sources
+- [ ] Allow external sources
+- [ ] Allow users to add multiple dependencies easily
 
 
 ## Contributing
