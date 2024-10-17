@@ -1,0 +1,10 @@
+[package]
+name = "aurders"
+version = "0.1.0"
+description = "A simple AUR helper for developer to publish their projects easily on Arch User Repository."
+readme = "README.md"
+license = "MIT"
+authors = ["Mitesh <smiteshhc@gmail.com>"]
+edition = "2021"
+
+[dependencies]

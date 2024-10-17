@@ -1,0 +1,27 @@
+# Maintainer: {maintainer_name} {maintainer_email}
+pkgname={pkgname}
+pkgver={pkgver}
+pkgrel={pkgrel}
+pkgdesc={pkgdesc}
+arch=("{arch}")
+url="{url}"
+license=("{license}")
+depends=("{depends}")
+makedepends=("{makedepends}")
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=("{sha256sums}")
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  
+  # Install the binary to /usr/bin/
+  install -Dm755 $pkgname "$pkgdir/usr/bin/$pkgname"
+
+  # Install the license to /usr/share/licenses/$pkgname/
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
