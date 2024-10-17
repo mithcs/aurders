@@ -2,6 +2,7 @@ use std::io::{self, Read, Write};
 use std::fs::File;
 use sha256::try_digest;
 use std::path::Path;
+use clap::{Arg, Command};
 
 struct Information {
     maintainer_name: String,
@@ -19,8 +20,23 @@ struct Information {
 }
 
 fn main() {
-    let source: String;
-    source = input_string("Source file: ");
+    let matches = Command::new("aurders")
+        // Will be shown only when custom help template is used (after clap 4.0)
+        .author("Mitesh Soni, smiteshhc@gmail.com")
+        .version("1.0.0")
+        .about("A simple AUR helper for developers to easily publish their projects on Arch User Repository")
+        .arg(
+            Arg::new("source")
+                // Do not set .short or .long to define positional argument
+                // .short('s')
+                // .long("source")
+                .required(true)
+                .help("Source folder of the project")
+        )
+        .get_matches();
+
+    let source = matches.get_one::<String>("source")
+                        .expect("Source folder is not specified. See --help.");
 
     let pkginfo = Information {
         maintainer_name: input_string("Enter the name of maintainer: "),
@@ -106,14 +122,15 @@ fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error> {
             srcinfo = output
                 .replace("{pkgbase}", &pkginfo.pkgname)
                 .replace("{pkgdesc}", &pkginfo.pkgdesc)
+                .replace("{pkgver}", &pkginfo.pkgver)
                 .replace("{pkgrel}", &pkginfo.pkgrel)
-                .replace("{url}", &pkginfo.url)
+                .replace("{pkgurl}", &pkginfo.url)
                 .replace("{arch}", &pkginfo.arch)
                 .replace("{license}", &pkginfo.license)
                 .replace("{makedepends}", &pkginfo.makedepends)
                 .replace("{source}", "SOURCE")
-                .replace("{sha256sums}", "sha256sums")
-                .replace("{pkgname}", "pkgname");
+                .replace("{sha256sums}", &pkginfo.sha256sums)
+                .replace("{pkgname}", &pkginfo.pkgname);
         }
         Err(e) => {
             return Err(e)
