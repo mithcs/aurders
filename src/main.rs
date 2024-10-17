@@ -1,5 +1,7 @@
 use std::io::{self, Read, Write};
 use std::fs::File;
+use sha256::try_digest;
+use std::path::Path;
 
 struct Information {
     maintainer_name: String,
@@ -17,7 +19,9 @@ struct Information {
 }
 
 fn main() {
-    println!("Hello, world!");
+    let source: String;
+    source = input_string("Source file: ");
+
     let pkginfo = Information {
         maintainer_name: input_string("Enter the name of maintainer: "),
         maintainer_email: input_string("Enter the email of maintainer: "),
@@ -30,18 +34,21 @@ fn main() {
         arch: input_string("Enter the architecture of package: "),
         depends: input_string("Enter the dependencies of package: "),
         makedepends: input_string("Enter the make dependencies of package: "),
-        sha256sums: input_string("Enter the sha256sums of package: "),
+        sha256sums: match get_sha256(&source) {
+            Some(sha256) => sha256,
+            None => "SKIP".to_string(),  // why warn to convert None to snake_case?
+        },
     };
 
     let pkgbuild_result = generate_pkgbuild(&pkginfo);
 
     match pkgbuild_result {
         Ok(pkgbuild) => {
-            println!("Successfully Generated PKGBUILD");
+            println!("Successfully Generated PKGBUILD.");
             save_pkgbuild(&pkgbuild);
         }
         Err(e) => {
-            println!("Failed to generate PKGBUILD: {}", e);
+            println!("Failed to generate PKGBUILD: {}.", e);
         }
     }
 
@@ -49,16 +56,16 @@ fn main() {
 
     match srcinfo_result {
         Ok(srcinfo) => {
-            println!("Successfully Generated SRCINFO");
+            println!("Successfully Generated SRCINFO.");
             save_srcinfo(&srcinfo);
         }
         Err(e) => {
-            println!("Failed to generate SRCINFO: {}", e);
+            println!("Failed to generate SRCINFO: {}.", e);
         }
     }
 }
 
-// generate_pkgbuild generates and returns the PKGBUILD
+/// generate_pkgbuild generates and returns the PKGBUILD
 fn generate_pkgbuild(pkginfo: &Information) -> Result<String, std::io::Error> {
     let template = get_pkgbuild();
     let pkgbuild: String;
@@ -88,7 +95,7 @@ fn generate_pkgbuild(pkginfo: &Information) -> Result<String, std::io::Error> {
     Ok(pkgbuild)
 }
 
-// generate_srcinfo generates and returns the SRCINFO
+/// generate_srcinfo generates and returns the SRCINFO
 fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error> {
     let template = get_srcinfo();
     let srcinfo: String;
@@ -117,7 +124,7 @@ fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error> {
 }
 
 
-// get_pkgbuild retrieves and returns the contents of templates/PKGBUILD
+/// get_pkgbuild retrieves and returns the contents of templates/PKGBUILD
 fn get_pkgbuild() -> std::io::Result<String> {
     let mut file = File::open("templates/PKGBUILD")?;
     let mut contents = String::new();
@@ -126,7 +133,7 @@ fn get_pkgbuild() -> std::io::Result<String> {
     Ok(contents)
 }
 
-// get_srcinfo retrieves and returns the contents of templates/SRCINFO
+/// get_srcinfo retrieves and returns the contents of templates/SRCINFO
 fn get_srcinfo() -> std::io::Result<String> {
     let mut file = File::open("templates/SRCINFO")?;
     let mut contents = String::new();
@@ -135,7 +142,7 @@ fn get_srcinfo() -> std::io::Result<String> {
     Ok(contents)
 }
 
-// input_string is a helper function to get string input from user efficiently
+/// input_string is a helper function to get string input from user efficiently
 fn input_string(prompt: &str) -> String {
     let mut input = String::new();
 
@@ -144,13 +151,14 @@ fn input_string(prompt: &str) -> String {
 
     match io::stdin().read_line(&mut input) {
         Ok(_) => (),
-        Err(e) => println!("Unable to take input: {}", e),
+        Err(e) => println!("Unable to take input: {}.", e),
     }
 
+    // Trim the string to remove '\n'
     input.trim().to_string()
 }
 
-// save_pkgbuild is a helper function to save PKGBUILD to disk
+/// save_pkgbuild is a helper function to save PKGBUILD to disk
 fn save_pkgbuild(pkgbuild: &String) {
     // create_new because it creates new file in read-write mode; errror if the file exists
     // and making sure that possibly existing PKGBUILD does not get overwritten
@@ -159,15 +167,15 @@ fn save_pkgbuild(pkgbuild: &String) {
     match file_result {
         Ok(mut file) => {
             match file.write_all(pkgbuild.as_bytes()) {
-                Ok(_) => println!("Generated PKGBUILD successfully."),
-                Err(e) => println!("Failed to write to PKGBUILD: {}", e),
+                Ok(_) => println!("Saved PKGBUILD to disk successfully."),
+                Err(e) => println!("Failed to write to PKGBUILD: {}.", e),
             }
         },
-        Err(e) => println!("Failed to create new PKGBUILD: {}", e),
+        Err(e) => println!("Failed to create new PKGBUILD: {}.", e),
     }
 }
 
-// save_srcinfo is a helper function to save .SRCINFO to disk
+/// save_srcinfo is a helper function to save .SRCINFO to disk
 fn save_srcinfo(srcinfo: &String) {
     // create_new because it creates new file in read-write mode; error if the file exists
     // and making sure that possibly existing SRCINFO does not get overwritten
@@ -176,10 +184,24 @@ fn save_srcinfo(srcinfo: &String) {
     match file_result {
         Ok(mut file) => {
             match file.write_all(srcinfo.as_bytes()) {
-                Ok(_) => println!("Generated .SRCINFO successfully."),
-                Err(e) => println!("Failed to write to .SRCINFO: {}", e),
+                Ok(_) => println!("Saved .SRCINFO to disk successfully."),
+                Err(e) => println!("Failed to write to .SRCINFO: {}.", e),
             }
         },
-        Err(e) => println!("Failed to create new .SRCINFO: {}", e),
+        Err(e) => println!("Failed to create new .SRCINFO: {}.", e),
+    }
+}
+
+/// get_sha256 performs sha256 digest generation and returns it
+fn get_sha256(source: &String) -> Option<String> {
+    let input = Path::new(&source);
+    let value_result = try_digest(input);
+
+    match value_result {
+        Ok(value) => return Some(value),
+        Err(e) => {
+            println!("Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e);
+            return None;
+        },
     }
 }
