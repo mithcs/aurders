@@ -31,7 +31,7 @@ pub fn handle_args() -> (String, bool) {
             .expect("Source folder is not specified. See --help.");
 
     let get_template = matches
-            .get_one::<bool>("get-template");
+            .get_one::<bool>("get-templates");
                 
 
     (source.to_string(), get_template.is_some())
