@@ -7,16 +7,11 @@ mod shared;
 use pkgbuild::generate_pkgbuild;
 use shared::get_information;
 use srcinfo::generate_srcinfo;
-
-use std::fs;
+use utils::create_directory;
 
 use crate::shared::Information;
-
 fn main() {
-    match fs::create_dir("aurders") {
-        Ok(_) => println!("Created directory."),
-        Err(e) => println!("Failed to create directory: {}.", e),
-    };
+    create_directory("aurders".to_string());
 
     let info_result = get_information();
     let pkginfo: Information;

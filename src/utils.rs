@@ -1,12 +1,17 @@
 //! utils module includes all the utlity and helper functions
-use std::fs::File;
-use std::io::{self, Write};
+use std::fs::{self, File, remove_file};
+use std::io::{self, ErrorKind, Write};
 use std::path::Path;
 
+use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use sha256::try_digest;
 use tar::Builder;
+use tar::Archive;
+
+use std::io::Cursor;
+use reqwest;
 
 /// input_string is a helper function to get string input from user efficiently
 pub fn input_string(prompt: &str, default: &str) -> String {
@@ -61,7 +66,8 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
 
     match tar.append_dir_all(&source, &source) {
         Ok(_) => (),
-        Err(e) => println!("Failed to append source to tar: {}.", e),
+        // Really wanted to do match e.kind() { NotADirectory };
+        Err(e) => panic!("Failed to append source to tarball. Make sure source is a directory.\nGot: {}.", e),
     };
 
     Ok(tarball_name)
@@ -103,5 +109,61 @@ pub fn select_arch() -> Option<String> {
                 println!("Invalid input. Try again");
             },
         };
+    };
+}
+
+/// create_directory creates directory according to given path
+pub fn create_directory(path: String) {
+    match fs::create_dir(&path) {
+        Ok(_) => println!("Created directory {}.", &path),
+        Err(e) => match e.kind() {
+            ErrorKind::AlreadyExists => println!("Directory already exists."),
+            ErrorKind::PermissionDenied => println!("Cannot create directory, permission denied"),
+            _ => println!("Failed to create directory. Unknown error occurred.\nPath: {}.", &path),
+        },
+    };
+}
+
+/// decompress_tarball decompresses the tarball specified at tarball_path
+fn decompress_tarball(tarball_path: String) -> Result<(), std::io::Error> {
+    let tar_gz = File::open(tarball_path)?;
+    let tar = GzDecoder::new(tar_gz);
+    let mut archive = Archive::new(tar);
+    archive.unpack(".")?;
+
+    Ok(())
+}
+
+/// fetch_data fetches the data from given url and writes to given filename
+fn fetch_data(url: String, filename: String) -> Result<(), Box<dyn std::error::Error>> {
+    println!("Attempting to fetch templates...");
+    let response = reqwest::blocking::get(url)?.bytes()?;
+    let mut file = File::create(filename)?;
+    let mut content = Cursor::new(response);
+    io::copy(&mut content, &mut file)?;
+    println!("Fetched templates successfully.");
+
+    Ok(())
+}
+
+/// get_templates retrieve the template by calling fetch_data() correctly
+// TODO: Update url and filename
+pub fn get_templates() {
+    let url = "https://gdex.ucar.edu/dataset/147_miesch/file/saber_ref_mpi_cgal.tar.gz";
+    let filename = "test.tar.gz";
+
+    match fetch_data(url.to_string(), filename.to_string()) {
+        Ok(_) => (),
+        Err(e) => println!("Unable to fetch data: {}.", e),
+    };
+
+    match decompress_tarball(filename.to_string()) {
+        Ok(_) => (),
+        Err(e) => println!("Failed to decompress archive: {}.", e),
+    };
+
+    match remove_file(filename) {
+        Ok(_) => println!("Removed file: {}.", filename),
+        Err(e) => println!("Failed to remove {}: {}.", filename, e),
     };
 }
