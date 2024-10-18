@@ -1,11 +1,12 @@
+//! srcinfo module handles the generation of srcinfo
 use crate::Information;
 
 use std::fs::File;
 use std::io::{Read, Write};
 
 /// generate_srcinfo generates and returns the SRCINFO
-pub fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error> {
-    let template = get_srcinfo();
+pub fn generate_srcinfo(pkginfo: &Information) {
+    let template = get_template();
     let srcinfo: String;
 
     match template {
@@ -23,15 +24,15 @@ pub fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error>
                 .replace("{source}", "SOURCE")
                 .replace("{sha256sums}", &pkginfo.sha256sums)
                 .replace("{pkgname}", &pkginfo.pkgname);
-        }
-        Err(e) => return Err(e),
-    }
 
-    Ok(srcinfo)
+            save_srcinfo(&srcinfo);
+        }
+        Err(e) => println!("Failed to generate SRCINFO: {}.", e),
+    }
 }
 
-/// get_srcinfo retrieves and returns the contents of templates/SRCINFO
-pub fn get_srcinfo() -> std::io::Result<String> {
+/// get_template retrieves and returns the contents of templates/SRCINFO
+fn get_template() -> std::io::Result<String> {
     let mut file = File::open("templates/SRCINFO")?;
     let mut contents = String::new();
 
@@ -40,7 +41,7 @@ pub fn get_srcinfo() -> std::io::Result<String> {
 }
 
 /// save_srcinfo is a helper function to save .SRCINFO to disk
-pub fn save_srcinfo(srcinfo: &String) {
+fn save_srcinfo(srcinfo: &String) {
     // create_new because it creates new file in read-write mode; error if the file exists
     // and making sure that possibly existing SRCINFO does not get overwritten
     let file_result = File::create_new(".SRCINFO");

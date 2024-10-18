@@ -1,3 +1,4 @@
+//! utils module includes all the utlity and helper functions
 use std::fs::File;
 use std::io::{self, Write};
 use std::path::Path;
