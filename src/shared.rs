@@ -48,7 +48,6 @@ pub fn get_information() -> Option<Information> {
         pkgdesc: input_string("Enter the description about package", "_"),
         url: input_string("Enter the url of package", "_"),
         license: input_string("Enter the license of package", "_"),
-        // TODO: Allow user to choose from list of common arch, or enter manually
         arch: match select_arch() {
             Some(s) => s,
             None => {
@@ -60,7 +59,7 @@ pub fn get_information() -> Option<Information> {
         makedepends: input_string("Enter the make dependencies of package: ", ""),
         sha256sums: match get_sha256(&tarball) {
             Some(sha256) => sha256,
-            None => "SKIP".to_string(), // why warn to convert None to snake_case?
+            None => "SKIP".to_string(),
         },
     };
 

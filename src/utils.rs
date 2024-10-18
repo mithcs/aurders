@@ -53,7 +53,6 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
     let tarball_name = match source.split('/').last() {
         Some(output) => format!("aurders/{}.tar.gz", output),
         None => {
-            // why warn to convert None to snake_case?
             println!("Failed to split string.");
             format!("aurders/{}.tar.gz", &source)
         }
