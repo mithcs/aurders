@@ -148,8 +148,8 @@ fn fetch_data(url: String, filename: String) -> Result<(), Box<dyn std::error::E
 /// get_templates retrieve the template by calling fetch_data() correctly
 // TODO: Update url and filename
 pub fn get_templates() {
-    let url = "https://gdex.ucar.edu/dataset/147_miesch/file/saber_ref_mpi_cgal.tar.gz";
-    let filename = "test.tar.gz";
+    let url = "https://github.com/miteshhc/aurders/releases/download/template/templates.tar.gz";
+    let filename = "templates.tar.gz";
 
     match fetch_data(url.to_string(), filename.to_string()) {
         Ok(_) => (),
