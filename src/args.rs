@@ -17,9 +17,9 @@ pub fn handle_args() -> (String, bool) {
                 .help("Source folder of the packages")
         )
         .arg(
-            Arg::new("get-template")
+            Arg::new("get-templates")
                 .short('t')
-                .long("get-template")
+                .long("get-templates")
                 .required(false)
                 .num_args(0)  // Takes 0 arguments
                 .help("Get templates")
