@@ -8,11 +8,13 @@
 
 ___
 
-aurders is a simple helper for developers to easily upload their projects to
+aurders is a simple helper for developers to easily upload their packages to
 Arch User Repository.
 
-
-TODO: Populate README
+## TODO
+[ ] Add support for multiple data sources
+[ ] Allow external sources
+[ ] Allow users to add multiple dependencies easily
 
 
 ## Contributing
