@@ -1,7 +1,7 @@
 use crate::Information;
 
-use std::io::{Read, Write};
 use std::fs::File;
+use std::io::{Read, Write};
 
 /// generate_srcinfo generates and returns the SRCINFO
 pub fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error> {
@@ -53,4 +53,3 @@ pub fn save_srcinfo(srcinfo: &String) {
         Err(e) => println!("Failed to create new .SRCINFO: {}.", e),
     }
 }
-

@@ -6,7 +6,7 @@ mod utils;
 use args::handle_args;
 use pkgbuild::{generate_pkgbuild, save_pkgbuild};
 use srcinfo::{generate_srcinfo, save_srcinfo};
-use utils::{get_sha256, input_string, create_tarball};
+use utils::{create_tarball, get_sha256, input_string};
 
 /// Information stores the required information about package
 struct Information {

@@ -2,9 +2,9 @@ use std::fs::File;
 use std::io::{self, Write};
 use std::path::Path;
 
-use sha256::try_digest;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use sha256::try_digest;
 use tar::Builder;
 
 /// input_string is a helper function to get string input from user efficiently
@@ -36,7 +36,8 @@ pub fn get_sha256(source: &String) -> Option<String> {
         Ok(value) => return Some(value),
         Err(e) => {
             println!(
-                "Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e
+                "Failed to get sha256: {}.\nUsing 'SKIP' as default value.",
+                e
             );
             return None;
         }

@@ -54,4 +54,3 @@ pub fn save_pkgbuild(pkgbuild: &String) {
         Err(e) => println!("Failed to create new PKGBUILD: {}.", e),
     }
 }
-
