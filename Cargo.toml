@@ -8,5 +8,7 @@ authors = ["Mitesh <smiteshhc@gmail.com>"]
 edition = "2021"
 
 [dependencies]
+clap = "4.5.20"
 sha256 = "1.5.0"
-clap = { version = "4.5.20" }
+tar = "0.4.42"
+flate2 = "1.0.34"

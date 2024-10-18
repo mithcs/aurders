@@ -1,9 +1,13 @@
 use std::io::{self, Read, Write};
 use std::fs::File;
+use clap::error::Result;
 use sha256::try_digest;
 use std::path::Path;
 use clap::{Arg, Command};
+use flate2::Compression;
+use flate2::write::GzEncoder;
 
+/// Information stores the required information about package
 struct Information {
     maintainer_name: String,
     maintainer_email: String,
@@ -21,13 +25,13 @@ struct Information {
 
 fn main() {
     let matches = Command::new("aurders")
-        // Will be shown only when custom help template is used (after clap 4.0)
-        .author("Mitesh Soni, smiteshhc@gmail.com")
+        // Will be shown only when custom help template is used (on clap 4.0 or later)
+        // .author("Mitesh Soni, smiteshhc@gmail.com")
         .version("1.0.0")
         .about("A simple AUR helper for developers to easily publish their projects on Arch User Repository")
         .arg(
             Arg::new("source")
-                // Do not set .short or .long to define positional argument
+                // Do not set short() or long() to define positional argument
                 // .short('s')
                 // .long("source")
                 .required(true)
@@ -37,6 +41,14 @@ fn main() {
 
     let source = matches.get_one::<String>("source")
                         .expect("Source folder is not specified. See --help.");
+
+    let tarball = match create_tarball(&source) {
+        Ok(output) => output,
+        Err(e) => {
+            println!("Failed to generate tarball: {}.", e);
+            "".to_string()
+        },
+    };
 
     let pkginfo = Information {
         maintainer_name: input_string("Enter the name of maintainer: "),
@@ -50,7 +62,7 @@ fn main() {
         arch: input_string("Enter the architecture of package: "),
         depends: input_string("Enter the dependencies of package: "),
         makedepends: input_string("Enter the make dependencies of package: "),
-        sha256sums: match get_sha256(&source) {
+        sha256sums: match get_sha256(&tarball) {
             Some(sha256) => sha256,
             None => "SKIP".to_string(),  // why warn to convert None to snake_case?
         },
@@ -79,6 +91,8 @@ fn main() {
             println!("Failed to generate SRCINFO: {}.", e);
         }
     }
+
+
 }
 
 /// generate_pkgbuild generates and returns the PKGBUILD
@@ -221,4 +235,27 @@ fn get_sha256(source: &String) -> Option<String> {
             return None;
         },
     }
+}
+
+/// create_tarball creates tarball of given source and returns the name of tarball
+fn create_tarball(source: &String) -> Result<String, std::io::Error> {
+    let tarball_name = match source.split('/').last() {
+        Some(output) => format!("{}.tar.gz", output),
+        None => {  // why warn to convert None to snake_case?
+            println!("Failed to split string");
+            format!("{}.tar.gz", &source)
+        }
+    };
+
+    let tar_gz = File::create(&tarball_name)?;
+
+    let enc = GzEncoder::new(tar_gz, Compression::default());
+    let mut tar = tar::Builder::new(enc);
+
+    match tar.append_dir(".", &source) {
+        Ok(_) => (),
+        Err(e) => println!("Failed to append sources to tar: {}", e),
+    };
+
+    Ok(tarball_name)
 }
