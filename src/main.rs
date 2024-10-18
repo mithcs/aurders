@@ -8,7 +8,7 @@ use pkgbuild::generate_pkgbuild;
 use shared::get_information;
 use srcinfo::generate_srcinfo;
 
-use crate::shared::Information;
+use shared::Information;
 
 fn main() {
     let info_result = get_information();

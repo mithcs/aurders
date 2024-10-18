@@ -25,10 +25,6 @@ pub struct Information {
 pub fn get_information() -> Option<Information> {
     let (source, get_template) = handle_args();
 
-    if get_template {
-        get_templates();
-    }
-
     create_directory("aurders".to_string());
 
     // Create tarball first as it is required for sha256sum
@@ -67,6 +63,10 @@ pub fn get_information() -> Option<Information> {
             None => "SKIP".to_string(), // why warn to convert None to snake_case?
         },
     };
+
+    if get_template {
+        get_templates();
+    }
 
     return Some(pkginfo);
 }
