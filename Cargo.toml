@@ -1,7 +1,7 @@
 [package]
 name = "aurders"
 version = "1.0.0"
-description = "A simple AUR helper for developers to publish their projects easily on Arch User Repository."
+description = "A simple AUR helper for developers to publish their packages easily on Arch User Repository."
 readme = "README.md"
 license = "MIT"
 authors = ["Mitesh Soni <smiteshhc@gmail.com>"]
