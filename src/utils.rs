@@ -69,7 +69,7 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
 
 /// select_arch functions allows user to choose from architectures easily
 pub fn select_arch() -> Option<String> {
-    print!("Select the target architecture for your project:");
+    print!("Select the target architecture for your package:");
     io::stdout().flush().unwrap(); // Flush the output correctly
 
     loop {
