@@ -46,7 +46,7 @@ fn get_template() -> std::io::Result<String> {
 fn save_pkgbuild(pkgbuild: &String) {
     // create_new because it creates new file in read-write mode; errror if the file exists
     // and making sure that possibly existing PKGBUILD does not get overwritten
-    let file_result = File::create_new("PKGBUILD");
+    let file_result = File::create_new("aurders/PKGBUILD");
 
     match file_result {
         Ok(mut file) => match file.write_all(pkgbuild.as_bytes()) {

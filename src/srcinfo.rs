@@ -44,7 +44,7 @@ fn get_template() -> std::io::Result<String> {
 fn save_srcinfo(srcinfo: &String) {
     // create_new because it creates new file in read-write mode; error if the file exists
     // and making sure that possibly existing SRCINFO does not get overwritten
-    let file_result = File::create_new(".SRCINFO");
+    let file_result = File::create_new("aurders/.SRCINFO");
 
     match file_result {
         Ok(mut file) => match file.write_all(srcinfo.as_bytes()) {

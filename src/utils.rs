@@ -12,7 +12,8 @@ use tar::Builder;
 pub fn input_string(prompt: &str, default: &str) -> String {
     let mut input = String::new();
 
-    print!("{}", prompt);
+    print!("{}\n", prompt);
+    print!("> ");
     io::stdout().flush().unwrap(); // Flush the output correctly
 
     match io::stdin().read_line(&mut input) {
@@ -29,17 +30,14 @@ pub fn input_string(prompt: &str, default: &str) -> String {
 }
 
 /// get_sha256 performs sha256 digest generation and returns it
-pub fn get_sha256(source: &String) -> Option<String> {
-    let input = Path::new(&source);
+pub fn get_sha256(tarball: &String) -> Option<String> {
+    let input = Path::new(&tarball);
     let value_result = try_digest(input);
 
     match value_result {
         Ok(value) => return Some(value),
         Err(e) => {
-            println!(
-                "Failed to get sha256: {}.\nUsing 'SKIP' as default value.",
-                e
-            );
+            println!("Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e);
             return None;
         }
     }
@@ -48,11 +46,11 @@ pub fn get_sha256(source: &String) -> Option<String> {
 /// create_tarball creates tarball of given source and returns the name of tarball
 pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
     let tarball_name = match source.split('/').last() {
-        Some(output) => format!("{}.tar.gz", output),
+        Some(output) => format!("aurders/{}.tar.gz", output),
         None => {
             // why warn to convert None to snake_case?
             println!("Failed to split string.");
-            format!("{}.tar.gz", &source)
+            format!("aurders/{}.tar.gz", &source)
         }
     };
 
@@ -61,9 +59,9 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
     let enc = GzEncoder::new(tar_gz, Compression::default());
     let mut tar = Builder::new(enc);
 
-    match tar.append_dir(".", &source) {
+    match tar.append_dir_all(&source, &source) {
         Ok(_) => (),
-        Err(e) => println!("Failed to append sources to tar: {}.", e),
+        Err(e) => println!("Failed to append source to tar: {}.", e),
     };
 
     Ok(tarball_name)
@@ -75,7 +73,7 @@ pub fn select_arch() -> Option<String> {
     io::stdout().flush().unwrap(); // Flush the output correctly
 
     loop {
-        print!("\n[1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n");
+        print!("\n  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n> ");
         io::stdout().flush().unwrap();
         let mut input = String::new();
 
@@ -84,7 +82,10 @@ pub fn select_arch() -> Option<String> {
             Err(e) => println!("Invalid input: {}", e),
         }
 
-        let arch: u8 = input.trim().parse().expect("Failed to parse input.");
+        let arch: u8 = match input.trim().parse() {
+            Ok(ip) => ip,
+            Err(_) => 1,
+        };
 
         match arch {
             1 => return Some("x86_64".to_string()),

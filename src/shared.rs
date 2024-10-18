@@ -25,24 +25,24 @@ pub fn get_information() -> Option<Information> {
     // Create tarball first as it is required for sha256sum
     let tarball = match create_tarball(&source) {
         Ok(output) => {
-            println!("Created tarball successfully.");
+            println!("\nCreated tarball successfully.\n");
             output
         },
         Err(e) => {
-            println!("Failed to generate tarball: {}.", e);
+            println!("\nFailed to generate tarball: {}.\n", e);
             "ERRRROOORRR".to_string()
         }
     };
 
     let pkginfo = Information {
-        maintainer_name: input_string("Enter the name of maintainer: ", "_"),
-        maintainer_email: input_string("Enter the email of maintainer: ", "_"),
-        pkgname: input_string("Enter the name of package: ", "_"),
-        pkgver: input_string("Enter the version of package(default: 1.0.0): ", "1.0.0"),
-        pkgrel: input_string("Enter the release number of package(default: 1): ", "1"),
-        pkgdesc: input_string("Enter the description about package: ", "_"),
-        url: input_string("Enter the url of package: ", "_"),
-        license: input_string("Enter the license of package: ", "_"),
+        maintainer_name: input_string("Enter the name of maintainer", "_"),
+        maintainer_email: input_string("Enter the email of maintainer", "_"),
+        pkgname: input_string("Enter the name of package", "_"),
+        pkgver: input_string("Enter the version of package(default: 1.0.0)", "1.0.0"),
+        pkgrel: input_string("Enter the release number of package(default: 1)", "1"),
+        pkgdesc: input_string("Enter the description about package", "_"),
+        url: input_string("Enter the url of package", "_"),
+        license: input_string("Enter the license of package", "_"),
         // TODO: Allow user to choose from list of common arch, or enter manually
         arch: match select_arch() {
             Some(s) => s,
