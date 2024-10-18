@@ -15,8 +15,8 @@ Arch User Repository.
 TODO: Populate README
 
 
-#### Contributing
+### Contributing
 Contributions, issues, pull requests and suggestions are welcome!
 
-#### LICENSE
+### LICENSE
 Distributed under the MIT license. See [LICENSE](./LICENSE) for more infomation.
