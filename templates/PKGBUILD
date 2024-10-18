@@ -2,12 +2,12 @@
 pkgname={pkgname}
 pkgver={pkgver}
 pkgrel={pkgrel}
-pkgdesc={pkgdesc}
-arch=("{arch}")
+pkgdesc="{pkgdesc}"
+arch=('{arch}')
 url="{url}"
-license=("{license}")
-depends=("{depends}")
-makedepends=("{makedepends}")
+license=('{license}')
+depends=({depends})
+makedepends=({makedepends})
 source=("$pkgname-$pkgver.tar.gz")
 sha256sums=("{sha256sums}")
 
