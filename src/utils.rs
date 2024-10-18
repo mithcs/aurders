@@ -68,3 +68,39 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
 
     Ok(tarball_name)
 }
+
+/// select_arch functions allows user to choose from architectures easily
+pub fn select_arch() -> Option<String> {
+    print!("Select the target architecture for your project:");
+    io::stdout().flush().unwrap(); // Flush the output correctly
+
+    loop {
+        print!("\n[1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n");
+        io::stdout().flush().unwrap();
+        let mut input = String::new();
+
+        match io::stdin().read_line(&mut input) {
+            Ok(_) => (),
+            Err(e) => println!("Invalid input: {}", e),
+        }
+
+        let arch: u8 = input.trim().parse().expect("Failed to parse input.");
+
+        match arch {
+            1 => return Some("x86_64".to_string()),
+            2 => return Some("i686".to_string()),
+            3 => return Some("any".to_string()),
+            4 => {
+                print!("Enter target architecture: ");
+                io::stdout().flush().unwrap();
+
+                io::stdin().read_line(&mut input).expect("Failed to get input.");
+
+                return Some(input.trim().to_string());
+            }
+            _ => {
+                println!("Invalid input. Try again");
+            },
+        };
+    };
+}

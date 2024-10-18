@@ -1,6 +1,6 @@
 //! shared module contains the data that is shared among others
 use crate::args::handle_args;
-use crate::utils::{get_sha256, input_string, create_tarball};
+use crate::utils::{create_tarball, get_sha256, input_string, select_arch};
 
 /// Information stores the required information about package
 pub struct Information {
@@ -44,7 +44,13 @@ pub fn get_information() -> Option<Information> {
         url: input_string("Enter the url of package: ", "_"),
         license: input_string("Enter the license of package: ", "_"),
         // TODO: Allow user to choose from list of common arch, or enter manually
-        arch: input_string("Enter the architecture of package(default: x86_64): ", "x86_64"),
+        arch: match select_arch() {
+            Some(s) => s,
+            None => {
+                println!("Architecture not selected. Using x86_64 as default.");
+                "x86_64".to_string()
+            },
+        },
         depends: input_string("Enter the dependencies of package: ", ""),
         makedepends: input_string("Enter the make dependencies of package: ", ""),
         sha256sums: match get_sha256(&tarball) {
