@@ -1,0 +1,56 @@
+use crate::Information;
+
+use std::io::{Read, Write};
+use std::fs::File;
+
+/// generate_srcinfo generates and returns the SRCINFO
+pub fn generate_srcinfo(pkginfo: &Information) -> Result<String, std::io::Error> {
+    let template = get_srcinfo();
+    let srcinfo: String;
+
+    match template {
+        Ok(output) => {
+            println!("Got SRCINFO template");
+            srcinfo = output
+                .replace("{pkgbase}", &pkginfo.pkgname)
+                .replace("{pkgdesc}", &pkginfo.pkgdesc)
+                .replace("{pkgver}", &pkginfo.pkgver)
+                .replace("{pkgrel}", &pkginfo.pkgrel)
+                .replace("{pkgurl}", &pkginfo.url)
+                .replace("{arch}", &pkginfo.arch)
+                .replace("{license}", &pkginfo.license)
+                .replace("{makedepends}", &pkginfo.makedepends)
+                .replace("{source}", "SOURCE")
+                .replace("{sha256sums}", &pkginfo.sha256sums)
+                .replace("{pkgname}", &pkginfo.pkgname);
+        }
+        Err(e) => return Err(e),
+    }
+
+    Ok(srcinfo)
+}
+
+/// get_srcinfo retrieves and returns the contents of templates/SRCINFO
+pub fn get_srcinfo() -> std::io::Result<String> {
+    let mut file = File::open("templates/SRCINFO")?;
+    let mut contents = String::new();
+
+    file.read_to_string(&mut contents)?;
+    Ok(contents)
+}
+
+/// save_srcinfo is a helper function to save .SRCINFO to disk
+pub fn save_srcinfo(srcinfo: &String) {
+    // create_new because it creates new file in read-write mode; error if the file exists
+    // and making sure that possibly existing SRCINFO does not get overwritten
+    let file_result = File::create_new(".SRCINFO");
+
+    match file_result {
+        Ok(mut file) => match file.write_all(srcinfo.as_bytes()) {
+            Ok(_) => println!("Saved .SRCINFO to disk successfully."),
+            Err(e) => println!("Failed to write to .SRCINFO: {}.", e),
+        },
+        Err(e) => println!("Failed to create new .SRCINFO: {}.", e),
+    }
+}
+
