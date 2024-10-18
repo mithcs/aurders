@@ -1,6 +1,9 @@
 //! shared module contains the data that is shared among others
 use crate::args::handle_args;
-use crate::utils::{create_tarball, get_sha256, get_templates, input_string, select_arch};
+use crate::utils::{
+    create_tarball, get_sha256, get_templates, input_string,
+    select_arch, create_directory
+};
 
 /// Information stores the required information about package
 pub struct Information {
@@ -25,6 +28,8 @@ pub fn get_information() -> Option<Information> {
     if get_template {
         get_templates();
     }
+
+    create_directory("aurders".to_string());
 
     // Create tarball first as it is required for sha256sum
     let tarball = match create_tarball(&source) {
