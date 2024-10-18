@@ -7,7 +7,7 @@ pub fn handle_args() -> String {
         // Will be shown only when custom help template is used (on clap 4.0 or later)
         // .author("Mitesh Soni, smiteshhc@gmail.com")
         .version("1.0.0")
-        .about("A simple AUR helper for developers to easily publish their projects on Arch User Repository")
+        .about("aurders is a simple aur helper for developers to publish their projects easily on Arch User Repository.")
         .arg(
             Arg::new("source")
                 // Do not set short() or long() to define positional argument
