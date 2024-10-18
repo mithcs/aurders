@@ -7,6 +7,7 @@ mod shared;
 use pkgbuild::generate_pkgbuild;
 use shared::get_information;
 use srcinfo::generate_srcinfo;
+use utils::dead;
 
 use shared::Information;
 
@@ -16,7 +17,11 @@ fn main() {
 
     match info_result {
         Some(info) => pkginfo = info,
-        None => panic!("Failed to get information."),
+        None => {
+            eprintln!("Failed to get information.");
+            dead();
+            return;
+        },
     };
 
     generate_pkgbuild(&pkginfo);

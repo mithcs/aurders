@@ -1,4 +1,5 @@
 //! pkgbuild module handles the generation of pkgbuild
+use crate::utils::dead;
 use crate::Information;
 
 use std::fs::File;
@@ -28,7 +29,10 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
 
             save_pkgbuild(&pkgbuild);
         },
-        Err(e) => println!("Failed to generate PKGBUILD: {}.", e),
+        Err(e) => {
+            eprintln!("Failed to generate PKGBUILD: {}.", e);
+            dead();
+        },
     };
 
 }
@@ -51,8 +55,14 @@ fn save_pkgbuild(pkgbuild: &String) {
     match file_result {
         Ok(mut file) => match file.write_all(pkgbuild.as_bytes()) {
             Ok(_) => println!("Saved PKGBUILD to disk successfully."),
-            Err(e) => println!("Failed to write to PKGBUILD: {}.", e),
+            Err(e) => {
+                eprintln!("Failed to write to PKGBUILD: {}.", e);
+                dead();
+            },
         },
-        Err(e) => println!("Failed to create new PKGBUILD: {}.", e),
+        Err(e) => {
+            eprintln!("Failed to create new PKGBUILD: {}.", e);
+            dead();
+        },
     }
 }

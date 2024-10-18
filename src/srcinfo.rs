@@ -1,4 +1,5 @@
 //! srcinfo module handles the generation of srcinfo
+use crate::utils::dead;
 use crate::Information;
 
 use std::fs::File;
@@ -27,7 +28,10 @@ pub fn generate_srcinfo(pkginfo: &Information) {
 
             save_srcinfo(&srcinfo);
         }
-        Err(e) => println!("Failed to generate SRCINFO: {}.", e),
+        Err(e) => {
+            eprintln!("Failed to generate SRCINFO: {}.", e);
+            dead();
+        },
     }
 }
 
@@ -49,8 +53,14 @@ fn save_srcinfo(srcinfo: &String) {
     match file_result {
         Ok(mut file) => match file.write_all(srcinfo.as_bytes()) {
             Ok(_) => println!("Saved .SRCINFO to disk successfully."),
-            Err(e) => println!("Failed to write to .SRCINFO: {}.", e),
+            Err(e) => {
+                eprintln!("Failed to write to .SRCINFO: {}.", e);
+                dead();
+            },
         },
-        Err(e) => println!("Failed to create new .SRCINFO: {}.", e),
+        Err(e) => {
+            eprintln!("Failed to create new .SRCINFO: {}.", e);
+            dead();
+        },
     }
 }

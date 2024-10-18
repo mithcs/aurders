@@ -34,7 +34,7 @@ pub fn get_information() -> Option<Information> {
             output
         },
         Err(e) => {
-            println!("\nFailed to generate tarball: {}.\n", e);
+            eprintln!("\nFailed to generate tarball: {}.\n", e);
             "ERRRROOORRR".to_string()
         }
     };

@@ -1,6 +1,8 @@
 //! utils module includes all the utlity and helper functions
 use std::fs::{self, File, remove_file};
 use std::io::{self, ErrorKind, Write};
+use std::io::Cursor;
+use std::process::exit;
 use std::path::Path;
 
 use flate2::read::GzDecoder;
@@ -9,8 +11,6 @@ use flate2::Compression;
 use sha256::try_digest;
 use tar::Builder;
 use tar::Archive;
-
-use std::io::Cursor;
 use reqwest;
 
 /// input_string is a helper function to get string input from user efficiently
@@ -23,7 +23,10 @@ pub fn input_string(prompt: &str, default: &str) -> String {
 
     match io::stdin().read_line(&mut input) {
         Ok(_) => (),
-        Err(e) => println!("Unable to take input: {}.", e),
+        Err(e) => {
+            eprintln!("Unable to take input: {}.", e);
+            dead();
+        },
     }
 
     if input.trim().is_empty() {
@@ -42,7 +45,7 @@ pub fn get_sha256(tarball: &String) -> Option<String> {
     match value_result {
         Ok(value) => return Some(value),
         Err(e) => {
-            println!("Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e);
+            eprintln!("Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e);
             return None;
         }
     }
@@ -53,7 +56,7 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
     let tarball_name = match source.split('/').last() {
         Some(output) => format!("aurders/{}.tar.gz", output),
         None => {
-            println!("Failed to split string.");
+            eprintln!("Failed to split string.");
             format!("aurders/{}.tar.gz", &source)
         }
     };
@@ -65,8 +68,11 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
 
     match tar.append_dir_all(&source, &source) {
         Ok(_) => (),
-        // Really wanted to do match e.kind() { NotADirectory };
-        Err(e) => panic!("Failed to append source to tarball. Make sure source is a directory.\nGot: {}.", e),
+        // Really wanted to do match e.kind() { NotADirectory }; but is a unstable library feature
+        Err(e) => {
+            eprintln!("Failed to append source to tarball. Make sure source is a directory.\nGot: {}.", e);
+            dead();
+        },
     };
 
     Ok(tarball_name)
@@ -84,12 +90,12 @@ pub fn select_arch() -> Option<String> {
 
         match io::stdin().read_line(&mut input) {
             Ok(_) => (),
-            Err(e) => println!("Invalid input: {}", e),
+            Err(e) => eprintln!("Invalid input: {}", e),
         }
 
         let arch: u8 = match input.trim().parse() {
             Ok(ip) => ip,
-            Err(_) => 1,
+            Err(_) => 1,  // x86_64 as default arch
         };
 
         match arch {
@@ -105,7 +111,7 @@ pub fn select_arch() -> Option<String> {
                 return Some(input.trim().to_string());
             }
             _ => {
-                println!("Invalid input. Try again");
+                eprintln!("Invalid input. Try again");
             },
         };
     };
@@ -116,9 +122,15 @@ pub fn create_directory(path: String) {
     match fs::create_dir(&path) {
         Ok(_) => println!("Created directory {}.", &path),
         Err(e) => match e.kind() {
-            ErrorKind::AlreadyExists => println!("Directory already exists."),
-            ErrorKind::PermissionDenied => println!("Cannot create directory, permission denied"),
-            _ => println!("Failed to create directory. Unknown error occurred.\nPath: {}.", &path),
+            ErrorKind::AlreadyExists => println!("Directory already exists..."),
+            ErrorKind::PermissionDenied => {
+                eprintln!("Cannot create directory, permission denied");
+                dead();
+            },
+            _ => {
+                eprintln!("Failed to create directory. Unknown error occurred.\nPath: {}.", &path);
+                dead();
+            },
         },
     };
 }
@@ -146,23 +158,34 @@ fn fetch_data(url: String, filename: String) -> Result<(), Box<dyn std::error::E
 }
 
 /// get_templates retrieve the template by calling fetch_data() correctly
-// TODO: Update url and filename
 pub fn get_templates() {
     let url = "https://github.com/miteshhc/aurders/releases/download/template/templates.tar.gz";
     let filename = "templates.tar.gz";
 
     match fetch_data(url.to_string(), filename.to_string()) {
         Ok(_) => (),
-        Err(e) => println!("Unable to fetch data: {}.", e),
+        Err(e) => {
+            eprintln!("Unable to fetch data: {}.", e);
+            dead();
+        },
     };
 
     match decompress_tarball(filename.to_string()) {
         Ok(_) => (),
-        Err(e) => println!("Failed to decompress archive: {}.", e),
+        Err(e) => {
+            eprintln!("Failed to decompress archive: {}.", e);
+            dead();
+        },
     };
 
     match remove_file(filename) {
         Ok(_) => println!("Removed file: {}.", filename),
-        Err(e) => println!("Failed to remove {}: {}.", filename, e),
+        Err(e) => eprintln!("Failed to remove {}: {}.\nYou might want to remove it manually.", filename, e),
     };
+}
+
+/// dead performs any required cleanup and exists the program abnormally
+pub fn dead() {
+    eprintln!("Exiting...");
+    exit(1);
 }
