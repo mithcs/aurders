@@ -1,5 +1,6 @@
 //! I (mitesh) could not think of any name for this module. And therefore, final_step exists. I'll
 //! think of something ASAP and change this, if I remember to do so.
+use std::io::Write;
 use std::process::Command;
 use std::fs;
 use std::env;
@@ -60,6 +61,80 @@ fn clone_aur_repo(pkgname: &String) -> Option<()> {
         Err(e) => {
             eprintln!("Failed to clone repository: {}.", e);
             return None;
+        }
+    };
+}
+
+/// add_to_repo adds and commits the files to aur@aur.archlinux.org repository
+pub fn add_to_repo(pkgname: &String) {
+    match env::set_current_dir(pkgname) {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("Failed to change current directory: {}.", e);
+            return;
+        }
+    };
+
+    let output = Command::new("git")
+            .arg("add")
+            .arg(".")
+            .output();
+
+    match output {
+        Ok(op) => {
+            if op.status.success() {
+                println!("Added files to git.");
+            } else {
+                if let Ok(stderr) = String::from_utf8(op.stderr) {
+                    eprintln!("git add failed: {}.", stderr);
+                    dead();
+                } else {
+                    eprintln!("Failed to read stderr.");
+                }
+            }
+        },
+        Err(e) => {
+            eprintln!("git add failed: {}.", e);
+            dead();
+        }
+    };
+
+    let mut commit_message = String::new();
+
+    println!("Enter commit message");
+    print!("> ");
+    std::io::stdout().flush().unwrap();
+
+    match std::io::stdin().read_line(&mut commit_message) {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("Failed to read commit: {}.", e);
+            dead();
+        }
+    }
+
+    let output = Command::new("git")
+            .arg("commit")
+            .arg("-m")
+            .arg(commit_message)
+            .output();
+
+    match output {
+        Ok(op) => {
+            if op.status.success() {
+                println!("Executed git commit successfully.");
+            } else {
+                if let Ok(stderr) = String::from_utf8(op.stderr) {
+                    eprintln!("git commit failed: {}.", stderr);
+                    dead();
+                } else {
+                    eprintln!("Failed to read stderr.");
+                }
+            }
+        },
+        Err(e) => {
+            eprintln!("git commit failed: {}.", e);
+            dead();
         }
     };
 }

@@ -9,7 +9,7 @@ use pkgbuild::generate_pkgbuild;
 use shared::get_information;
 use srcinfo::generate_srcinfo;
 use utils::dead;
-use final_step::{execute_makepkg, setup_repo};
+use final_step::{add_to_repo, execute_makepkg, setup_repo};
 
 use shared::Information;
 
@@ -30,4 +30,5 @@ fn main() {
     generate_srcinfo(&pkginfo);
     execute_makepkg();
     setup_repo(&pkginfo.pkgname, &pkginfo.pkgver, &pkginfo.pkgrel);
+    add_to_repo(&pkginfo.pkgname);
 }
