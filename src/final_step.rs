@@ -5,6 +5,7 @@ use std::fs;
 use std::env;
 
 use crate::utils::dead;
+use crate::utils::dead_probably;
 
 /// execute_makepkg executes the makepkg command
 pub fn execute_makepkg() {
@@ -80,8 +81,21 @@ pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
         Err(e) => eprintln!("Failed to copy .SRCINFO: {}.", e)
     };
 
-    match fs::copy(format!("{}-{}-{}.tar.gz.zst", &pkgname, &pkgver, &pkgrel), format!("{}/{}-{}-{}.tar.gz.zst", &pkgname, &pkgname, &pkgver, &pkgrel)) {
+    let arch = match env::consts::ARCH {
+        "x86_64" => "x86_64",
+        "x86" => "i686",    // arch dropped support in 2017, unofficial port is available
+        "arm" => "arm",     // unofficial port is available
+        "aarch64" => "aarch64", // again, unofficial port is available (ARM)
+        _ => {
+            eprintln!("Architecture is not supported by Arch Linux.");
+            eprintln!("You might want to modify the file name of package (.pkg.tar.zst).");
+            dead_probably();
+            "UNSUPPORTED"
+        }
+    };
+
+    match fs::copy(format!("{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgver, &pkgrel, &arch), format!("{}/{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgname, &pkgver, &pkgrel, &arch)) {
         Ok(_) => println!("Copied package."),
-        Err(e) => eprintln!("Failed to copy package: {}", e)
+        Err(e) => eprintln!("Failed to copy package: {}.", e)
     };
 }

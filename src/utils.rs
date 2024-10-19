@@ -214,6 +214,27 @@ pub fn dead() {
     exit(1);
 }
 
+/// dead_probably asks the user, if they want to continue or ...
+pub fn dead_probably() {
+    let mut dead_huh = String::new();
+
+    println!("Do you still want to continue(y/N)");
+    print!("> ");
+
+    match io::stdin().read_line(&mut dead_huh) {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("argh, even asking for this wouldn't work??? {}", e);
+            dead();
+        }
+    };
+
+    match dead_huh.trim() {
+        "y" | "Y" => dead(),
+        _ => ()
+    };
+}
+
 /// get_source gets the source from user
 pub fn get_source() -> Option<String> {
     let mut input = String::new();
@@ -233,7 +254,6 @@ pub fn get_source() -> Option<String> {
     let input = input.trim();
 
     match input {
-        "N" | "n" => None,
         "Y" | "y" => {
             let mut source = String::new();
             print!("\nSource > ");
