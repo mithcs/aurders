@@ -3,11 +3,13 @@ mod pkgbuild;
 mod shared;
 mod srcinfo;
 mod utils;
+mod final_step;
 
 use pkgbuild::generate_pkgbuild;
 use shared::get_information;
 use srcinfo::generate_srcinfo;
 use utils::dead;
+use final_step::{execute_makepkg, setup_repo};
 
 use shared::Information;
 
@@ -26,4 +28,6 @@ fn main() {
 
     generate_pkgbuild(&pkginfo);
     generate_srcinfo(&pkginfo);
+    execute_makepkg();
+    setup_repo(&pkginfo.pkgname, &pkginfo.pkgver, &pkginfo.pkgrel);
 }

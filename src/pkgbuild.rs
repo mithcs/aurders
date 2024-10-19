@@ -31,7 +31,7 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
             save_pkgbuild(&pkgbuild);
         }
         Err(e) => {
-            eprintln!("Failed to generate PKGBUILD: {}.", e);
+            eprintln!("Failed to generate PKGBUILD from template: {}.", e);
             dead();
         }
     };

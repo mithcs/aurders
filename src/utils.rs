@@ -2,7 +2,7 @@
 use std::fs::{self, remove_file, File};
 use std::io::Cursor;
 use std::io::{self, ErrorKind, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::exit;
 
 use flate2::read::GzDecoder;
@@ -55,29 +55,39 @@ pub fn get_sha256(tarball: &String) -> Option<String> {
 }
 
 /// create_tarball creates tarball of given source and returns the name of tarball
-pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
-    let tarball_name = match source.split('/').last() {
-        Some(output) => format!("aurders/{}.tar.gz", output),
+pub fn create_tarball(source: &PathBuf) -> Result<String, std::io::Error> {
+    let source_file = match source.file_name() {
+        Some(name) => {
+            match name.to_str() {
+                Some(name_str) => name_str,
+                None => {
+                    eprintln!("Failed to convert: &OsStr -> &str");
+                    dead();
+                    &"ERRROOORRR".to_string()
+                }
+            } 
+        },
         None => {
-            eprintln!("Failed to split string.");
-            format!("aurders/{}.tar.gz", &source)
+            eprintln!("Failed to extract filename from source.");
+            dead();
+            &"ERRROOORRR".to_string()
         }
     };
+
+    let tarball_name = format!("aurders/{}.tar.gz", source_file);
 
     let tar_gz = File::create(&tarball_name)?;
 
     let enc = GzEncoder::new(tar_gz, Compression::default());
     let mut tar = Builder::new(enc);
 
-    match tar.append_dir_all(&source, &source) {
+    match tar.append_dir_all(&source_file, &source) {
         Ok(_) => (),
-        // Really wanted to do match e.kind() { NotADirectory }; but is a unstable library feature
         Err(e) => {
-            eprintln!(
-                "Failed to append source to tarball. Make sure source is a directory.\nGot: {}.",
-                e
-            );
+            eprintln!("Failed to append source to tarball. Make sure source is a directory.");
+            eprintln!("Got: {}.", e);
             dead();
+            return Err(e);
         }
     };
 
@@ -130,7 +140,7 @@ pub fn create_directory(path: String) {
     match fs::create_dir(&path) {
         Ok(_) => println!("Created directory {}.", &path),
         Err(e) => match e.kind() {
-            ErrorKind::AlreadyExists => println!("Directory already exists..."),
+            ErrorKind::AlreadyExists => println!("Directory already exists."),
             ErrorKind::PermissionDenied => {
                 eprintln!("Cannot create directory, permission denied");
                 dead();
