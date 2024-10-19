@@ -1,15 +1,15 @@
 mod args;
+mod final_step;
 mod pkgbuild;
 mod shared;
 mod srcinfo;
 mod utils;
-mod final_step;
 
+use final_step::{add_to_repo, execute_makepkg, setup_repo};
 use pkgbuild::generate_pkgbuild;
 use shared::get_information;
 use srcinfo::generate_srcinfo;
 use utils::dead;
-use final_step::{add_to_repo, execute_makepkg, setup_repo};
 
 use shared::Information;
 

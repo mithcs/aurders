@@ -1,9 +1,9 @@
 //! I (mitesh) could not think of any name for this module. And therefore, final_step exists. I'll
 //! think of something ASAP and change this, if I remember to do so.
+use std::env;
+use std::fs;
 use std::io::Write;
 use std::process::Command;
-use std::fs;
-use std::env;
 
 use crate::utils::dead;
 use crate::utils::dead_probably;
@@ -12,7 +12,7 @@ use crate::utils::dead_probably;
 pub fn execute_makepkg() {
     match env::set_current_dir(format!("aurders")) {
         Ok(_) => (),
-        Err(e) => eprintln!("Failed to change current directory: {}.", e)
+        Err(e) => eprintln!("Failed to change current directory: {}.", e),
     };
 
     let output = Command::new("makepkg").output();
@@ -29,7 +29,7 @@ pub fn execute_makepkg() {
                     eprintln!("Failed to read stderr.");
                 }
             }
-        },
+        }
         Err(e) => {
             eprintln!("makepkg failed: {}.", e);
             dead();
@@ -57,7 +57,7 @@ fn clone_aur_repo(pkgname: &String) -> Option<()> {
                 }
                 return None;
             }
-        },
+        }
         Err(e) => {
             eprintln!("Failed to clone repository: {}.", e);
             return None;
@@ -75,10 +75,7 @@ pub fn add_to_repo(pkgname: &String) {
         }
     };
 
-    let output = Command::new("git")
-            .arg("add")
-            .arg(".")
-            .output();
+    let output = Command::new("git").arg("add").arg(".").output();
 
     match output {
         Ok(op) => {
@@ -92,7 +89,7 @@ pub fn add_to_repo(pkgname: &String) {
                     eprintln!("Failed to read stderr.");
                 }
             }
-        },
+        }
         Err(e) => {
             eprintln!("git add failed: {}.", e);
             dead();
@@ -114,10 +111,10 @@ pub fn add_to_repo(pkgname: &String) {
     }
 
     let output = Command::new("git")
-            .arg("commit")
-            .arg("-m")
-            .arg(commit_message)
-            .output();
+        .arg("commit")
+        .arg("-m")
+        .arg(commit_message)
+        .output();
 
     match output {
         Ok(op) => {
@@ -131,7 +128,7 @@ pub fn add_to_repo(pkgname: &String) {
                     eprintln!("Failed to read stderr.");
                 }
             }
-        },
+        }
         Err(e) => {
             eprintln!("git commit failed: {}.", e);
             dead();
@@ -143,23 +140,23 @@ pub fn add_to_repo(pkgname: &String) {
 pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
     match clone_aur_repo(&pkgname) {
         Some(_) => (),
-        None => return
+        None => return,
     }
 
     match fs::copy("PKGBUILD", format!("{}/PKGBUILD", &pkgname)) {
         Ok(_) => println!("Copied PKGBUILD."),
-        Err(e) => eprintln!("Failed to copy PKGBUILD: {}.", e)
+        Err(e) => eprintln!("Failed to copy PKGBUILD: {}.", e),
     };
 
     match fs::copy(".SRCINFO", format!("{}/.SRCINFO", &pkgname)) {
         Ok(_) => println!("Copied .SRCINFO."),
-        Err(e) => eprintln!("Failed to copy .SRCINFO: {}.", e)
+        Err(e) => eprintln!("Failed to copy .SRCINFO: {}.", e),
     };
 
     let arch = match env::consts::ARCH {
         "x86_64" => "x86_64",
-        "x86" => "i686",    // arch dropped support in 2017, unofficial port is available
-        "arm" => "arm",     // unofficial port is available
+        "x86" => "i686", // arch dropped support in 2017, unofficial port is available
+        "arm" => "arm",  // unofficial port is available
         "aarch64" => "aarch64", // again, unofficial port is available (ARM)
         _ => {
             eprintln!("Architecture is not supported by Arch Linux.");
@@ -169,8 +166,14 @@ pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
         }
     };
 
-    match fs::copy(format!("{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgver, &pkgrel, &arch), format!("{}/{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgname, &pkgver, &pkgrel, &arch)) {
+    match fs::copy(
+        format!("{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgver, &pkgrel, &arch),
+        format!(
+            "{}/{}-{}-{}-{}.pkg.tar.zst",
+            &pkgname, &pkgname, &pkgver, &pkgrel, &arch
+        ),
+    ) {
         Ok(_) => println!("Copied package."),
-        Err(e) => eprintln!("Failed to copy package: {}.", e)
+        Err(e) => eprintln!("Failed to copy package: {}.", e),
     };
 }

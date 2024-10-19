@@ -57,15 +57,13 @@ pub fn get_sha256(tarball: &String) -> Option<String> {
 /// create_tarball creates tarball of given source and returns the name of tarball
 pub fn create_tarball(source: &PathBuf) -> Result<String, std::io::Error> {
     let source_file = match source.file_name() {
-        Some(name) => {
-            match name.to_str() {
-                Some(name_str) => name_str,
-                None => {
-                    eprintln!("Failed to convert: &OsStr -> &str");
-                    dead();
-                    &"ERRROOORRR".to_string()
-                }
-            } 
+        Some(name) => match name.to_str() {
+            Some(name_str) => name_str,
+            None => {
+                eprintln!("Failed to convert: &OsStr -> &str");
+                dead();
+                &"ERRROOORRR".to_string()
+            }
         },
         None => {
             eprintln!("Failed to extract filename from source.");
@@ -231,7 +229,7 @@ pub fn dead_probably() {
 
     match dead_huh.trim() {
         "y" | "Y" => dead(),
-        _ => ()
+        _ => (),
     };
 }
 
