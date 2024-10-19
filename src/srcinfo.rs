@@ -22,7 +22,7 @@ pub fn generate_srcinfo(pkginfo: &Information) {
                 .replace("{arch}", &pkginfo.arch)
                 .replace("{license}", &pkginfo.license)
                 .replace("{makedepends}", &pkginfo.makedepends)
-                .replace("{source}", "SOURCE")
+                .replace("{source}", &pkginfo.source)
                 .replace("{sha256sums}", &pkginfo.sha256sums)
                 .replace("{pkgname}", &pkginfo.pkgname);
 

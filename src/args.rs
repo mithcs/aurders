@@ -32,7 +32,7 @@ pub fn handle_args() -> (String, bool) {
             .get_one::<String>("source")
             .expect("Source folder is not specified. See --help.");
 
-    let get_template = matches.get_one("templates").expect("ERRRORRR");
+    let get_template = matches.get_one("templates").expect("Failed to get flag templates");
 
     (source.to_string(), *get_template)
 }

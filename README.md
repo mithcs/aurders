@@ -14,7 +14,7 @@ Arch User Repository.
 ## TODO
 - [X] Handle errors correctly and crash the program when needed
 - [ ] Add support for multiple data sources
-- [ ] Allow external sources
+- [X] Allow external source
 - [ ] Allow users to add multiple dependencies easily
 
 

@@ -25,6 +25,7 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
                 .replace("{license}", &pkginfo.license)
                 .replace("{depends}", &pkginfo.depends)
                 .replace("{makedepends}", &pkginfo.makedepends)
+                .replace("{source}", &pkginfo.source)
                 .replace("{sha256sums}", &pkginfo.sha256sums);
 
             save_pkgbuild(&pkgbuild);

@@ -8,7 +8,7 @@ url="{url}"
 license=('{license}')
 depends=({depends})
 makedepends=({makedepends})
-source=("$pkgname-$pkgver.tar.gz")
+source=("{source}")
 sha256sums=("{sha256sums}")
 
 build() {
