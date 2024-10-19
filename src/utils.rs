@@ -17,9 +17,9 @@ use reqwest;
 pub fn input_string(prompt: &str, default: &str) -> String {
     let mut input = String::new();
 
-    print!("{}\n", prompt);
+    println!("\n{}", prompt);
     print!("> ");
-    io::stdout().flush().unwrap(); // Flush the output correctly
+    io::stdout().flush().unwrap();
 
     match io::stdin().read_line(&mut input) {
         Ok(_) => (),
@@ -27,7 +27,7 @@ pub fn input_string(prompt: &str, default: &str) -> String {
             eprintln!("Unable to take input: {}.", e);
             dead();
         },
-    }
+    };
 
     if input.trim().is_empty() {
         return default.to_string();
@@ -48,7 +48,7 @@ pub fn get_sha256(tarball: &String) -> Option<String> {
             eprintln!("Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e);
             return None;
         }
-    }
+    };
 }
 
 /// create_tarball creates tarball of given source and returns the name of tarball
@@ -80,18 +80,18 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
 
 /// select_arch functions allows user to choose from architectures easily
 pub fn select_arch() -> Option<String> {
-    print!("Select the target architecture for your package:");
+    println!("\nSelect the target architecture for your package:");
     io::stdout().flush().unwrap(); // Flush the output correctly
 
     loop {
-        print!("\n  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n> ");
+        print!("  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n> ");
         io::stdout().flush().unwrap();
         let mut input = String::new();
 
         match io::stdin().read_line(&mut input) {
             Ok(_) => (),
             Err(e) => eprintln!("Invalid input: {}", e),
-        }
+        };
 
         let arch: u8 = match input.trim().parse() {
             Ok(ip) => ip,
@@ -147,7 +147,7 @@ fn decompress_tarball(tarball_path: String) -> Result<(), std::io::Error> {
 
 /// fetch_data fetches the data from given url and writes to given filename
 fn fetch_data(url: String, filename: String) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Attempting to fetch templates...");
+    println!("Attempting to fetch {}...", filename);
     let response = reqwest::blocking::get(url)?.bytes()?;
     let mut file = File::create(filename)?;
     let mut content = Cursor::new(response);
@@ -188,4 +188,41 @@ pub fn get_templates() {
 pub fn dead() {
     eprintln!("Exiting...");
     exit(1);
+}
+
+/// get_source gets the source from user
+pub fn get_source() -> Option<String> {
+    let mut input = String::new();
+
+    println!("\nDo you want to specify source(s) manually?(y/N)");
+    print!("> ");
+    io::stdout().flush().unwrap();
+
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("Unable to take input: {}.", e);
+            dead();
+        },
+    };
+
+    let input = input.trim();
+
+    match input {
+        "N" | "n" => None,
+        "Y" | "y" => {
+            let mut source = String::new();
+            print!("\nSource > ");
+            match io::stdin().read_line(&mut source) {
+                Ok(_) => (),
+                Err(e) => {
+                    eprintln!("Unable to take input: {}.", e);
+                    dead();
+                }
+            }
+
+            return Some(source.trim().to_string());
+        },
+        _ => None,
+    }
 }

@@ -20,7 +20,7 @@ fn main() {
         None => {
             eprintln!("Failed to get information.");
             dead();
-            return;
+            return;  // rust made me do this
         },
     };
 

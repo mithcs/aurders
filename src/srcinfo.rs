@@ -32,7 +32,7 @@ pub fn generate_srcinfo(pkginfo: &Information) {
             eprintln!("Failed to generate SRCINFO: {}.", e);
             dead();
         },
-    }
+    };
 }
 
 /// get_template retrieves and returns the contents of templates/SRCINFO
@@ -62,5 +62,5 @@ fn save_srcinfo(srcinfo: &String) {
             eprintln!("Failed to create new .SRCINFO: {}.", e);
             dead();
         },
-    }
+    };
 }

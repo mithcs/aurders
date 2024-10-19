@@ -34,7 +34,6 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
             dead();
         },
     };
-
 }
 
 /// get_template retrieves and returns the contents of templates/PKGBUILD

@@ -2,7 +2,7 @@
 use crate::args::handle_args;
 use crate::utils::{
     create_tarball, get_sha256, get_templates, input_string,
-    select_arch, create_directory
+    select_arch, create_directory, get_source
 };
 
 /// Information stores the required information about package
@@ -18,10 +18,12 @@ pub struct Information {
     pub arch: String,
     pub depends: String,
     pub makedepends: String,
+    pub source: String,
     pub sha256sums: String,
 }
 
 /// get_information gets the required information about package from user and returns it
+// this should go to utils module, right? keeping this here until I am sure about that
 pub fn get_information() -> Option<Information> {
     let (source, get_template) = handle_args();
 
@@ -30,7 +32,7 @@ pub fn get_information() -> Option<Information> {
     // Create tarball first as it is required for sha256sum
     let tarball = match create_tarball(&source) {
         Ok(output) => {
-            println!("\nCreated tarball successfully.\n");
+            println!("\nCreated tarball successfully.");
             output
         },
         Err(e) => {
@@ -57,6 +59,13 @@ pub fn get_information() -> Option<Information> {
         },
         depends: input_string("Enter the dependencies of package: ", ""),
         makedepends: input_string("Enter the make dependencies of package: ", ""),
+        source: match get_source() {
+            Some(s) => s,
+            None => {
+                println!("Source not given. Using default: $pkgname-$pkgver.tar.gz\n");
+                "$pkgname-$pkgver.tar.gz".to_string()
+            },
+        },
         sha256sums: match get_sha256(&tarball) {
             Some(sha256) => sha256,
             None => "SKIP".to_string(),
