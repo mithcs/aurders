@@ -29,11 +29,11 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
                 .replace("{sha256sums}", &pkginfo.sha256sums);
 
             save_pkgbuild(&pkgbuild);
-        },
+        }
         Err(e) => {
             eprintln!("Failed to generate PKGBUILD: {}.", e);
             dead();
-        },
+        }
     };
 }
 
@@ -58,11 +58,11 @@ fn save_pkgbuild(pkgbuild: &String) {
             Err(e) => {
                 eprintln!("Failed to write to PKGBUILD: {}.", e);
                 dead();
-            },
+            }
         },
         Err(e) => {
             eprintln!("Failed to create new PKGBUILD: {}.", e);
             dead();
-        },
+        }
     }
 }

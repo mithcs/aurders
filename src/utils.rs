@@ -1,17 +1,17 @@
 //! utils module includes all the utlity and helper functions
-use std::fs::{self, File, remove_file};
-use std::io::{self, ErrorKind, Write};
+use std::fs::{self, remove_file, File};
 use std::io::Cursor;
-use std::process::exit;
+use std::io::{self, ErrorKind, Write};
 use std::path::Path;
+use std::process::exit;
 
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
-use sha256::try_digest;
-use tar::Builder;
-use tar::Archive;
 use reqwest;
+use sha256::try_digest;
+use tar::Archive;
+use tar::Builder;
 
 /// input_string is a helper function to get string input from user efficiently
 pub fn input_string(prompt: &str, default: &str) -> String {
@@ -26,7 +26,7 @@ pub fn input_string(prompt: &str, default: &str) -> String {
         Err(e) => {
             eprintln!("Unable to take input: {}.", e);
             dead();
-        },
+        }
     };
 
     if input.trim().is_empty() {
@@ -45,7 +45,10 @@ pub fn get_sha256(tarball: &String) -> Option<String> {
     match value_result {
         Ok(value) => return Some(value),
         Err(e) => {
-            eprintln!("Failed to get sha256: {}.\nUsing 'SKIP' as default value.", e);
+            eprintln!(
+                "Failed to get sha256: {}.\nUsing 'SKIP' as default value.",
+                e
+            );
             return None;
         }
     };
@@ -70,9 +73,12 @@ pub fn create_tarball(source: &String) -> Result<String, std::io::Error> {
         Ok(_) => (),
         // Really wanted to do match e.kind() { NotADirectory }; but is a unstable library feature
         Err(e) => {
-            eprintln!("Failed to append source to tarball. Make sure source is a directory.\nGot: {}.", e);
+            eprintln!(
+                "Failed to append source to tarball. Make sure source is a directory.\nGot: {}.",
+                e
+            );
             dead();
-        },
+        }
     };
 
     Ok(tarball_name)
@@ -95,7 +101,7 @@ pub fn select_arch() -> Option<String> {
 
         let arch: u8 = match input.trim().parse() {
             Ok(ip) => ip,
-            Err(_) => 1,  // x86_64 as default arch
+            Err(_) => 1, // x86_64 as default arch
         };
 
         match arch {
@@ -106,15 +112,17 @@ pub fn select_arch() -> Option<String> {
                 print!("Enter target architecture: ");
                 io::stdout().flush().unwrap();
 
-                io::stdin().read_line(&mut input).expect("Failed to get input.");
+                io::stdin()
+                    .read_line(&mut input)
+                    .expect("Failed to get input.");
 
                 return Some(input.trim().to_string());
             }
             _ => {
                 eprintln!("Invalid input. Try again");
-            },
+            }
         };
-    };
+    }
 }
 
 /// create_directory creates directory according to given path
@@ -126,11 +134,14 @@ pub fn create_directory(path: String) {
             ErrorKind::PermissionDenied => {
                 eprintln!("Cannot create directory, permission denied");
                 dead();
-            },
+            }
             _ => {
-                eprintln!("Failed to create directory. Unknown error occurred.\nPath: {}.", &path);
+                eprintln!(
+                    "Failed to create directory. Unknown error occurred.\nPath: {}.",
+                    &path
+                );
                 dead();
-            },
+            }
         },
     };
 }
@@ -167,7 +178,7 @@ pub fn get_templates() {
         Err(e) => {
             eprintln!("Unable to fetch data: {}.", e);
             dead();
-        },
+        }
     };
 
     match decompress_tarball(filename.to_string()) {
@@ -175,12 +186,15 @@ pub fn get_templates() {
         Err(e) => {
             eprintln!("Failed to decompress archive: {}.", e);
             dead();
-        },
+        }
     };
 
     match remove_file(filename) {
         Ok(_) => println!("Removed file: {}.", filename),
-        Err(e) => eprintln!("Failed to remove {}: {}.\nYou might want to remove it manually.", filename, e),
+        Err(e) => eprintln!(
+            "Failed to remove {}: {}.\nYou might want to remove it manually.",
+            filename, e
+        ),
     };
 }
 
@@ -203,7 +217,7 @@ pub fn get_source() -> Option<String> {
         Err(e) => {
             eprintln!("Unable to take input: {}.", e);
             dead();
-        },
+        }
     };
 
     let input = input.trim();
@@ -222,7 +236,7 @@ pub fn get_source() -> Option<String> {
             }
 
             return Some(source.trim().to_string());
-        },
+        }
         _ => None,
     }
 }

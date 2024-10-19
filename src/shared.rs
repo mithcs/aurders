@@ -1,8 +1,8 @@
 //! shared module contains the data that is shared among others
 use crate::args::handle_args;
 use crate::utils::{
-    create_tarball, get_sha256, get_templates, input_string,
-    select_arch, create_directory, get_source
+    create_directory, create_tarball, get_sha256, get_source, get_templates, input_string,
+    select_arch,
 };
 
 /// Information stores the required information about package
@@ -34,7 +34,7 @@ pub fn get_information() -> Option<Information> {
         Ok(output) => {
             println!("\nCreated tarball successfully.");
             output
-        },
+        }
         Err(e) => {
             eprintln!("\nFailed to generate tarball: {}.\n", e);
             "ERRRROOORRR".to_string()
@@ -55,7 +55,7 @@ pub fn get_information() -> Option<Information> {
             None => {
                 println!("Architecture not selected. Using x86_64 as default.");
                 "x86_64".to_string()
-            },
+            }
         },
         depends: input_string("Enter the dependencies of package: ", ""),
         makedepends: input_string("Enter the make dependencies of package: ", ""),
@@ -64,7 +64,7 @@ pub fn get_information() -> Option<Information> {
             None => {
                 println!("Source not given. Using default: $pkgname-$pkgver.tar.gz\n");
                 "$pkgname-$pkgver.tar.gz".to_string()
-            },
+            }
         },
         sha256sums: match get_sha256(&tarball) {
             Some(sha256) => sha256,

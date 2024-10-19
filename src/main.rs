@@ -1,8 +1,8 @@
 mod args;
 mod pkgbuild;
+mod shared;
 mod srcinfo;
 mod utils;
-mod shared;
 
 use pkgbuild::generate_pkgbuild;
 use shared::get_information;
@@ -20,8 +20,8 @@ fn main() {
         None => {
             eprintln!("Failed to get information.");
             dead();
-            return;  // rust made me do this
-        },
+            return; // rust made me do this
+        }
     };
 
     generate_pkgbuild(&pkginfo);

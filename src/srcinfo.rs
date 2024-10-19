@@ -31,7 +31,7 @@ pub fn generate_srcinfo(pkginfo: &Information) {
         Err(e) => {
             eprintln!("Failed to generate SRCINFO: {}.", e);
             dead();
-        },
+        }
     };
 }
 
@@ -56,11 +56,11 @@ fn save_srcinfo(srcinfo: &String) {
             Err(e) => {
                 eprintln!("Failed to write to .SRCINFO: {}.", e);
                 dead();
-            },
+            }
         },
         Err(e) => {
             eprintln!("Failed to create new .SRCINFO: {}.", e);
             dead();
-        },
+        }
     };
 }
