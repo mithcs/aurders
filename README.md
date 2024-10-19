@@ -18,6 +18,7 @@ ready-to-upload for Arch User Repository.
 - [ ] Add `install` lines to `package()` in PKGBUILD
 - [ ] Fix `final_step` module doc
 - [ ] Fix implementation for copying package.
+- [ ] Completely implement different methods for setting source(s)
 
 
 ## Contributing
