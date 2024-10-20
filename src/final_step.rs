@@ -2,6 +2,7 @@
 //! think of something ASAP and change this, if I remember to do so.
 use std::env;
 use std::fs;
+use std::io::BufRead;
 use std::io::{self, Write};
 use std::process::Command;
 
@@ -97,19 +98,7 @@ pub fn add_to_repo(pkgname: &String) {
         }
     };
 
-    let mut commit_message = String::new();
-
-    println!("\nEnter commit message");
-    print!("> ");
-    io::stdout().flush().unwrap();
-
-    match io::stdin().read_line(&mut commit_message) {
-        Ok(_) => (),
-        Err(e) => {
-            eprintln!("Failed to read commit: {}.", e);
-            dead();
-        }
-    }
+    let commit_message = get_commit_message();
 
     let output = Command::new("git")
         .arg("commit")
@@ -180,4 +169,31 @@ pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
         Ok(_) => println!("Copied package."),
         Err(e) => eprintln!("Failed to copy package: {}.", e),
     };
+}
+
+/// get_commit_message gets commit message from user and returns it
+fn get_commit_message() -> String {
+    let stdin = io::stdin();
+    let mut message = String::new();
+
+    println!("\nEnter commit message [\"qq\" or EOF signal to quit]");
+
+    // lock the stdin and take multiline input correctly
+    for line in stdin.lock().lines() {
+        match line {
+            Ok(input) => {
+                if input.trim() == "qq" {
+                    break;
+                }
+                message.push_str(&input);
+                message.push_str("\n");
+            }
+            Err(e) => {
+                eprintln!("Error reading line: {}.", e);
+                break;
+            }
+        }
+    }
+
+    message.trim().to_string()
 }
