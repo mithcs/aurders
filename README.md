@@ -11,6 +11,7 @@ ___
 aurders is a simple helper for developers to make their packages
 ready-to-upload for Arch User Repository.
 
+#### ⚠️ Currently only 1 source is supported
 
 ### External Source *(Untested feature)*
 
@@ -22,8 +23,8 @@ for source specify that URL.
 ## TODO
 - [ ] Add support for multiple data sources
 - [ ] Allow users to add multiple dependencies easily
-- [ ] Allow users to populate build() function in PKGBUILD
-- [ ] Allow users to populate package() function in PKGBUILD
+- [ ] Allow users to populate `build()` function in PKGBUILD
+- [ ] Allow users to populate `package()` function in PKGBUILD
 - [ ] Fix `final_step` module doc
 - [ ] Fix implementation for copying package
 - [ ] Completely implement different methods for setting source(s)
