@@ -3,7 +3,7 @@ use crate::utils::dead;
 use crate::Information;
 
 use std::fs::{self, File};
-use std::io::{self, BufRead, Read, Write};
+use std::io::{self, BufRead, Write};
 
 /// generate_pkgbuild generates and returns the PKGBUILD
 pub fn generate_pkgbuild(pkginfo: &Information) {
@@ -93,6 +93,7 @@ fn get_build_commands() -> String {
 
     println!("\nEnter commands to add in build(). [\"qq\" or EOF signal to quit]");
 
+    // lock the stdin and take multiline input correctly
     for line in stdin.lock().lines() {
         match line {
             Ok(input) => {

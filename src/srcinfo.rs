@@ -12,7 +12,7 @@ pub fn generate_srcinfo(pkginfo: &Information) {
 
     match template {
         Ok(output) => {
-            println!("Got SRCINFO template");
+            println!("Got SRCINFO template.");
             srcinfo = output
                 .replace("{pkgbase}", &pkginfo.pkgname)
                 .replace("{pkgdesc}", &pkginfo.pkgdesc)
