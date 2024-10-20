@@ -20,7 +20,7 @@ ready-to-upload for Arch User Repository.
 - Generates tarball from source directory.
 - Generates PKGBUILD from template.
 - Generates .SRCINFO from template.
-- Clones repository from aur@aur.archlinux.org of `pkgname`.
+- Clones repository from aur@aur.archlinux.​org of `pkgname`.
 - Adds PKGBUILD, .SRCINFO and source (\*.pkg.tar.zst) to git repository.
 - Commits the changes in the git repository.
 
@@ -41,8 +41,6 @@ asked for the source.
 ## TODO
 - [ ] Add support for multiple data sources
 - [ ] Allow users to add multiple dependencies easily
-- [ ] Allow users to populate `build()` function in PKGBUILD
-- [ ] Allow users to populate `package()` function in PKGBUILD
 - [ ] Fix `final_step` module doc
 - [ ] Fix implementation for copying package
 - [ ] Completely implement different methods for setting source(s)
