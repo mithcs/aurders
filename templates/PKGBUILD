@@ -12,9 +12,9 @@ source=("{source}")
 sha256sums=("{sha256sums}")
 
 build() {
-    echo "Building..."
+    {build}
 }
 
 package() {
-    echo "Packaging..."
+    {package}
 }
