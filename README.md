@@ -39,6 +39,7 @@ local copy in the source arguments, and provide the corresponding URL when
 asked for the source.
 
 ## TODO
+- [ ] Refactor everything
 - [ ] Add support for multiple data sources
 - [ ] Allow users to add multiple dependencies easily
 - [ ] Fix `final_step` module doc
