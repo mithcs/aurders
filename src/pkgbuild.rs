@@ -1,6 +1,6 @@
 //! pkgbuild module handles the generation of pkgbuild
-use crate::Information;
 use crate::utils::dead;
+use crate::Information;
 
 use std::fs::File;
 use std::io::{self, BufRead, Read, Write};
@@ -87,13 +87,13 @@ fn get_build_commands() -> String {
                 }
                 build.push_str(&input);
                 build.push_str("\n");
-            },
+            }
             Err(e) => {
                 eprintln!("Error reading line: {}.", e);
                 break;
             }
         }
-    };
+    }
 
     build.trim().to_string()
 }
@@ -113,13 +113,13 @@ fn get_package_commands() -> String {
                 }
                 package.push_str(&input);
                 package.push_str("\n");
-            },
+            }
             Err(e) => {
                 eprintln!("Error reading line: {}.", e);
                 break;
             }
         }
-    };
+    }
 
     package.trim().to_string()
 }
