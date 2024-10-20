@@ -1,14 +1,17 @@
 //! pkgbuild module handles the generation of pkgbuild
-use crate::utils::dead;
 use crate::Information;
+use crate::utils::dead;
 
 use std::fs::File;
-use std::io::{Read, Write};
+use std::io::{self, BufRead, Read, Write};
 
 /// generate_pkgbuild generates and returns the PKGBUILD
 pub fn generate_pkgbuild(pkginfo: &Information) {
     let template = get_template();
     let pkgbuild: String;
+
+    let build_commands = get_build_commands();
+    let package_commands = get_package_commands();
 
     match template {
         Ok(output) => {
@@ -26,7 +29,9 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
                 .replace("{depends}", &pkginfo.depends)
                 .replace("{makedepends}", &pkginfo.makedepends)
                 .replace("{source}", &pkginfo.source)
-                .replace("{sha256sums}", &pkginfo.sha256sums);
+                .replace("{sha256sums}", &pkginfo.sha256sums)
+                .replace("{build}", &build_commands)
+                .replace("{package}", &package_commands);
 
             save_pkgbuild(&pkgbuild);
         }
@@ -65,4 +70,56 @@ fn save_pkgbuild(pkgbuild: &String) {
             dead();
         }
     }
+}
+
+/// get_build_commads gets the build commands from user and returns it
+fn get_build_commands() -> String {
+    let mut build = String::new();
+    let stdin = io::stdin();
+
+    println!("\nEnter commands to add in build(). [\"qq\" or EOF signal to quit]");
+
+    for line in stdin.lock().lines() {
+        match line {
+            Ok(input) => {
+                if input.trim() == "qq" {
+                    break;
+                }
+                build.push_str(&input);
+                build.push_str("\n");
+            },
+            Err(e) => {
+                eprintln!("Error reading line: {}.", e);
+                break;
+            }
+        }
+    };
+
+    build.trim().to_string()
+}
+
+/// get_package_commads gets the package commands from user and returns it
+fn get_package_commands() -> String {
+    let mut package = String::new();
+    let stdin = io::stdin();
+
+    println!("\nEnter commands to add in package(). [\"qq\" or EOF signal to quit]");
+
+    for line in stdin.lock().lines() {
+        match line {
+            Ok(input) => {
+                if input.trim() == "qq" {
+                    break;
+                }
+                package.push_str(&input);
+                package.push_str("\n");
+            },
+            Err(e) => {
+                eprintln!("Error reading line: {}.", e);
+                break;
+            }
+        }
+    };
+
+    package.trim().to_string()
 }

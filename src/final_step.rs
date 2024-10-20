@@ -2,7 +2,7 @@
 //! think of something ASAP and change this, if I remember to do so.
 use std::env;
 use std::fs;
-use std::io::Write;
+use std::io::{self, Write};
 use std::process::Command;
 
 use crate::utils::dead;
@@ -101,9 +101,9 @@ pub fn add_to_repo(pkgname: &String) {
 
     println!("\nEnter commit message");
     print!("> ");
-    std::io::stdout().flush().unwrap();
+    io::stdout().flush().unwrap();
 
-    match std::io::stdin().read_line(&mut commit_message) {
+    match io::stdin().read_line(&mut commit_message) {
         Ok(_) => (),
         Err(e) => {
             eprintln!("Failed to read commit: {}.", e);
