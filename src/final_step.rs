@@ -15,7 +15,7 @@ pub fn execute_makepkg() {
         Err(e) => eprintln!("Failed to change current directory: {}.", e),
     };
 
-    println!("Executing makepkg...");
+    println!("\nExecuting makepkg...");
     let output = Command::new("makepkg").output();
 
     match output {
@@ -139,7 +139,7 @@ pub fn add_to_repo(pkgname: &String) {
 
 /// setup_repo sets up the repository to publish
 pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
-    println!("Setting up git repository...");
+    println!("\nSetting up git repository...");
 
     match clone_aur_repo(&pkgname) {
         Some(_) => (),
@@ -147,7 +147,7 @@ pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
     }
 
     match fs::copy("PKGBUILD", format!("{}/PKGBUILD", &pkgname)) {
-        Ok(_) => println!("Copied PKGBUILD."),
+        Ok(_) => println!("\nCopied PKGBUILD."),
         Err(e) => eprintln!("Failed to copy PKGBUILD: {}.", e),
     };
 

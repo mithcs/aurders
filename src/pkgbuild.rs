@@ -15,7 +15,7 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
 
     match template {
         Ok(output) => {
-            println!("Got PKGBUILD template");
+            println!("\nGot PKGBUILD template.");
             pkgbuild = output
                 .replace("{maintainer_name}", &pkginfo.maintainer_name)
                 .replace("{maintainer_email}", &pkginfo.maintainer_email)

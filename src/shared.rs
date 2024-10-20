@@ -62,7 +62,7 @@ pub fn get_information() -> Option<Information> {
         source: match get_source() {
             Some(s) => s,
             None => {
-                println!("Source not given. Using default: $pkgname-$pkgver-$pkgrel.tar.gz\n");
+                println!("Source not given. Using default source.\n");
                 "$pkgname-$pkgver-$pkgrel.tar.gz".to_string()
             }
         },
