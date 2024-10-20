@@ -2,8 +2,8 @@
 use crate::utils::dead;
 use crate::Information;
 
-use std::fs::File;
-use std::io::{Read, Write};
+use std::fs::{self, File};
+use std::io::Write;
 
 /// generate_srcinfo generates and returns the SRCINFO
 pub fn generate_srcinfo(pkginfo: &Information) {
@@ -37,10 +37,24 @@ pub fn generate_srcinfo(pkginfo: &Information) {
 
 /// get_template retrieves and returns the contents of templates/SRCINFO
 fn get_template() -> std::io::Result<String> {
-    let mut file = File::open("templates/SRCINFO")?;
-    let mut contents = String::new();
+    let contents_vec = match fs::read("templates/SRCINFO") {
+        Ok(output) => output,
+        Err(e) => {
+            eprintln!("Failed to read templates/SRCINFO: {}.", e);
+            dead();
+            return Err(e);
+        }
+    };
 
-    file.read_to_string(&mut contents)?;
+    let contents = match String::from_utf8(contents_vec) {
+        Ok(output) => output,
+        Err(e) => {
+            eprintln!("Failed to convert Vec<u8> to String: {}.", e);
+            dead();
+            "ERRROOORRR".to_string()
+        }
+    };
+
     Ok(contents)
 }
 

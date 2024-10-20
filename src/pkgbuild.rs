@@ -2,7 +2,7 @@
 use crate::utils::dead;
 use crate::Information;
 
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{self, BufRead, Read, Write};
 
 /// generate_pkgbuild generates and returns the PKGBUILD
@@ -44,10 +44,24 @@ pub fn generate_pkgbuild(pkginfo: &Information) {
 
 /// get_template retrieves and returns the contents of templates/PKGBUILD
 fn get_template() -> std::io::Result<String> {
-    let mut file = File::open("templates/PKGBUILD")?;
-    let mut contents = String::new();
+    let contents_vec = match fs::read("templates/PKGBUILD") {
+        Ok(output) => output,
+        Err(e) => {
+            eprintln!("Failed to read templates/PKGBUILD: {}.", e);
+            dead();
+            return Err(e);
+        }
+    };
 
-    file.read_to_string(&mut contents)?;
+    let contents = match String::from_utf8(contents_vec) {
+        Ok(output) => output,
+        Err(e) => {
+            eprintln!("Failed to convert Vec<u8> to String: {}.", e);
+            dead();
+            "ERRROOORRR".to_string()
+        }
+    };
+
     Ok(contents)
 }
 
