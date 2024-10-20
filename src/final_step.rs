@@ -139,6 +139,8 @@ pub fn add_to_repo(pkgname: &String) {
 
 /// setup_repo sets up the repository to publish
 pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
+    println!("Setting up git repository...");
+
     match clone_aur_repo(&pkgname) {
         Some(_) => (),
         None => return,
