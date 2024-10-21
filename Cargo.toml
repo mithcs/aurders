@@ -4,6 +4,7 @@ version = "1.0.0"
 description = "A simple helper for developers to make their packages ready-to-upload for Arch User Repository."
 readme = "README.md"
 license = "MIT"
+keywords = ["utility", "cli", "aur", "arch"]
 authors = ["Mitesh H. Soni <smiteshhc@gmail.com>"]
 edition = "2021"
 
