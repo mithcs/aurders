@@ -65,6 +65,8 @@ aurders source_dir --templates
 
 6. That's all.
 
+#### Refer to this [blog post](https://miteshhc.netlify.app/blog/02-introducting-aurders/) for more details
+
 ## What aurders does?
 
 #### aurders handles most of the things one has to do to make their package ready-to-upload on Arch User Repository.
