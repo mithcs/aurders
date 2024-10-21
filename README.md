@@ -11,6 +11,60 @@ ___
 aurders is a simple helper for developers to make their packages
 ready-to-upload for Arch User Repository.
 
+## Get Started
+
+### Installation
+
+#### From crates
+
+```bash
+cargo install aurders
+```
+
+#### From Github
+
+Head to [Releases](https://github.com/miteshhc/aurders/releases) section and
+grab the latest binary.
+
+#### Compile from source
+
+```bash
+git clone git@github.com:miteshhc/aurders.git
+cd aurders
+cargo build --release
+```
+
+Executable binary will built at `target/release/aurders`
+
+### Beforehand steps
+
+- Ensure you have your source directory correctly named according to
+  following format: `PkgName-PkgVer-RelNum`
+
+- Ensure you have following dependencies ready:
+    - AUR account (ready-to-use)
+    - git
+    - makepkg
+
+
+### How To Use
+
+1. Run `aurders` with source directory as argument.
+
+```bash
+aurders source_dir --templates
+```
+
+2. Enter the values for required fields as prompted.
+
+3. Enter the commands for build() and package() functions.
+
+4. Decide whether you want to commit changes manually or let aurders do it.
+
+5. Enter commit message (if you let aurders do it).
+
+6. That's all.
+
 ## What aurders does?
 
 #### aurders handles most of the things one has to do to make their package ready-to-upload on Arch User Repository.
@@ -20,7 +74,7 @@ ready-to-upload for Arch User Repository.
 - Generates .SRCINFO from template.
 - Clones repository from aur​@aur.archlinux.org of `pkgname`.
 - Adds PKGBUILD, .SRCINFO and source (\*.pkg.tar.zst) to git repository.
-- Commits the changes in the git repository.
+- Commits the changes in the git repository (if user wants aurders to).
 
 ## What aurders does not do?
 
@@ -33,20 +87,9 @@ ready-to-upload for Arch User Repository.
 ## Be mindful of following:
 
 - aurders currently supports only one source.
+- Ensure you have AUR account correctly setup.
 - You can set external source easily, but you are required to have local copy of that same package.
 - The PKGBUILD and .SRCINFO templates does not contain all the fields, it contains only what is required and/or is standard.
-
-## TODO
-- [ ] Allow adding extra maintainer(s) and/or contributors
-- [ ] Fix `final_step` module doc
-- [ ] Add how to with examples section
-- [ ] Add support for multiple data sources
-- [ ] Refactor everything
-- [X] Ask user before commiting changes in git repository
-- [X] Test untested features
-- [X] Allow users to add multiple dependencies easily
-- [X] Fix implementation for copying package
-
 
 ## Contributing
 All kinds of contributions are welcome! Whether you're fixing bugs, improving
