@@ -23,6 +23,7 @@ pub struct Information {
 
 /// get_information gets the required information about package from user and returns it
 // this should go to utils module, right? keeping this here until I am sure about that
+// utils module seems already packged. keeping it here, until I don't.
 pub fn get_information() -> Option<Information> {
     let (source, get_template) = handle_args();
 

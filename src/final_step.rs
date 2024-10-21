@@ -4,8 +4,7 @@ use std::io::{self, BufRead};
 use std::process::Command;
 use std::{env, fs};
 
-use crate::utils::dead;
-use crate::utils::dead_probably;
+use crate::utils::{dead, get_arch};
 
 /// execute_makepkg executes the makepkg command
 pub fn execute_makepkg() {
@@ -95,7 +94,46 @@ pub fn add_to_repo(pkgname: &String) {
             dead();
         }
     };
+}
 
+/// setup_repo sets up the repository to publish
+pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
+    println!("\nSetting up git repository...");
+
+    match clone_aur_repo(&pkgname) {
+        Some(_) => (),
+        None => return,
+    }
+
+    match fs::copy("PKGBUILD", format!("{}/PKGBUILD", &pkgname)) {
+        Ok(_) => println!("\nCopied PKGBUILD."),
+        Err(e) => eprintln!("Failed to copy PKGBUILD: {}.", e),
+    };
+
+    match fs::copy(".SRCINFO", format!("{}/.SRCINFO", &pkgname)) {
+        Ok(_) => println!("Copied .SRCINFO."),
+        Err(e) => eprintln!("Failed to copy .SRCINFO: {}.", e),
+    };
+
+    let arch = get_arch();
+
+    match fs::copy(
+        format!("{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgver, &pkgrel, &arch),
+        format!(
+            "{}/{}-{}-{}-{}.pkg.tar.zst",
+            &pkgname, &pkgname, &pkgver, &pkgrel, &arch
+        ),
+    ) {         // what is this formattttiinnggn???? @cargo_fmt
+        Ok(_) => println!("Copied package.\n"),
+        Err(e) => {
+            eprintln!("Failed to copy package: {}.", e);
+            dead();
+        }
+    };
+}
+
+/// commit_to_repo commits the changes in git repository
+pub fn commit_to_repo() {
     let commit_message = get_commit_message();
 
     let output = Command::new("git")
@@ -121,51 +159,6 @@ pub fn add_to_repo(pkgname: &String) {
             eprintln!("git commit failed: {}.", e);
             dead();
         }
-    };
-}
-
-/// setup_repo sets up the repository to publish
-pub fn setup_repo(pkgname: &String, pkgver: &String, pkgrel: &String) {
-    println!("\nSetting up git repository...");
-
-    match clone_aur_repo(&pkgname) {
-        Some(_) => (),
-        None => return,
-    }
-
-    match fs::copy("PKGBUILD", format!("{}/PKGBUILD", &pkgname)) {
-        Ok(_) => println!("\nCopied PKGBUILD."),
-        Err(e) => eprintln!("Failed to copy PKGBUILD: {}.", e),
-    };
-
-    match fs::copy(".SRCINFO", format!("{}/.SRCINFO", &pkgname)) {
-        Ok(_) => println!("Copied .SRCINFO."),
-        Err(e) => eprintln!("Failed to copy .SRCINFO: {}.", e),
-    };
-
-    let arch = match env::consts::ARCH {
-        "x86_64" => "x86_64",
-        // *Untested*
-        "x86" => "i686", // arch dropped support in 2017, unofficial port is available
-        "arm" => "arm",  // unofficial port is available
-        "aarch64" => "aarch64", // again, unofficial port is available (ARM)
-        _ => {
-            eprintln!("Architecture is not supported by Arch Linux.");
-            eprintln!("You might want to modify the file name of package (.pkg.tar.zst).");
-            dead_probably();
-            "UNSUPPORTED"
-        }
-    };
-
-    match fs::copy(
-        format!("{}-{}-{}-{}.pkg.tar.zst", &pkgname, &pkgver, &pkgrel, &arch),
-        format!(
-            "{}/{}-{}-{}-{}.pkg.tar.zst",
-            &pkgname, &pkgname, &pkgver, &pkgrel, &arch
-        ),
-    ) {
-        Ok(_) => println!("Copied package."),
-        Err(e) => eprintln!("Failed to copy package: {}.", e),
     };
 }
 

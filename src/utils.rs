@@ -1,6 +1,7 @@
 //! utils module includes all the utlity and helper functions
 use std::fs::{self, remove_file, File};
 use std::io::{self, Cursor, ErrorKind, Write};
+use std::env;
 use std::path::{Path, PathBuf};
 use std::process::exit;
 
@@ -64,6 +65,29 @@ pub fn input_string_strict(prompt: &str) -> String {
             eprintln!("This field is not optional. Try again.");
         }
     }
+}
+
+/// input_bool gets user input in the form of string, then returns true if the input is y or Y,
+/// false otherwise
+pub fn input_bool(prompt: &str) -> bool {
+    let mut input = String::new();
+
+    println!("\n{}", prompt);
+    print!("> ");
+    io::stdout().flush().unwrap();
+
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => (),
+        Err(e) => {
+            eprintln!("Unable to take input: {}.", e);
+            dead();
+        }
+    };
+
+    match input.trim() {
+        "y" | "Y" | "yes" | "definitely" => return true,
+        _ => return false,
+    };
 }
 
 /// get_sha256 performs sha256 digest generation and returns it
@@ -313,4 +337,23 @@ pub fn get_source() -> Option<String> {
         }
         _ => None,
     }
+}
+
+/// get_arch returns the current architecture
+pub fn get_arch() -> String {
+    let arch = match env::consts::ARCH {
+        "x86_64" => "x86_64",
+        // *Untested*
+        "x86" => "i686", // arch dropped support in 2017, unofficial port is available
+        "arm" => "arm",  // unofficial port is available
+        "aarch64" => "aarch64", // again, unofficial port is available (ARM)
+        _ => {
+            eprintln!("Architecture is not supported by Arch Linux.");
+            eprintln!("You might want to modify the file name of package (.pkg.tar.zst).");
+            dead_probably();
+            "UNSUPPORTED"
+        }
+    };
+
+    return arch.to_string();
 }
