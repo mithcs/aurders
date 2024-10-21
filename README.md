@@ -18,7 +18,7 @@ ready-to-upload for Arch User Repository.
 - Generates tarball from source directory.
 - Generates PKGBUILD from template.
 - Generates .SRCINFO from template.
-- Clones repository from aur@aur.archlinux.​org of `pkgname`.
+- Clones repository from aur​@aur.archlinux.org of `pkgname`.
 - Adds PKGBUILD, .SRCINFO and source (\*.pkg.tar.zst) to git repository.
 - Commits the changes in the git repository.
 
