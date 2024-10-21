@@ -49,7 +49,7 @@ ready-to-upload for Arch User Repository.
 
 
 ## Contributing
-All kinds of contribtions are welcome! Whether you're fixing bugs, improving
+All kinds of contributions are welcome! Whether you're fixing bugs, improving
 documentation, adding features, or even suggesting ideas, your help is greatly
 appreciated.
 
