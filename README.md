@@ -1,4 +1,4 @@
-<div align="center">
+
   <h3 align="center">AURDERS</h3>
 
   <h4 align="center">
@@ -37,11 +37,12 @@ ready-to-upload for Arch User Repository.
 - The PKGBUILD and .SRCINFO templates does not contain all the fields, it contains only what is required and/or is standard.
 
 ## TODO
-- [ ] Ask user before commiting changes in git repository
+- [ ] Allow adding extra maintainer(s) and/or contributors
 - [ ] Fix `final_step` module doc
 - [ ] Add how to with examples section
 - [ ] Add support for multiple data sources
 - [ ] Refactor everything
+- [X] Ask user before commiting changes in git repository
 - [X] Test untested features
 - [X] Allow users to add multiple dependencies easily
 - [X] Fix implementation for copying package
