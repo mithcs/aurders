@@ -11,8 +11,6 @@ ___
 aurders is a simple helper for developers to make their packages
 ready-to-upload for Arch User Repository.
 
-#### ⚠️ Currently only single source is supported.
-
 ## What aurders does?
 
 #### aurders handles most of the things one has to do to make their package ready-to-upload on Arch User Repository.
@@ -32,21 +30,21 @@ ready-to-upload for Arch User Repository.
 - Does NOT interfere with anything inside the .ssh/ directory.
 - Does NOT push-es changes from local git repository.
 
-### External Source
+## Be mindful of following:
 
-If you want to use external source, ensure you have a local copy. Specify that
-local copy in the source arguments, and provide the corresponding URL when
-asked for the source.
+- aurders currently supports only one source.
+- You can set external source easily, but you are required to have local copy of that same package.
+- The PKGBUILD and .SRCINFO templates does not contain all the fields, it contains only what is required and/or is standard.
 
 ## TODO
-- [ ] Refactor everything
-- [ ] Add support for multiple data sources
-- [ ] Allow users to add multiple dependencies easily
+- [ ] Ask user before commiting changes in git repository
 - [ ] Fix `final_step` module doc
-- [ ] Fix implementation for copying package
-- [ ] Completely implement different methods for setting source(s)
-- [ ] Test untested features
-- [ ] Add `provides`, `conflicts` and `optdepends` in PKGBUILD
+- [ ] Add how to with examples section
+- [ ] Add support for multiple data sources
+- [ ] Refactor everything
+- [X] Test untested features
+- [X] Allow users to add multiple dependencies easily
+- [X] Fix implementation for copying package
 
 
 ## Contributing
