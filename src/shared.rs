@@ -1,8 +1,7 @@
 //! shared module contains the data that is shared among others
 use crate::args::handle_args;
 use crate::utils::{
-    create_directory, create_tarball, get_sha256, get_source, get_templates, input_string,
-    select_arch,
+    create_directory, create_tarball, get_sha256, get_source, get_templates, input_string, input_string_strict, select_arch
 };
 
 /// Information stores the required information about package
@@ -42,14 +41,14 @@ pub fn get_information() -> Option<Information> {
     };
 
     let pkginfo = Information {
-        maintainer_name: input_string("Enter the name of maintainer", "_"),
-        maintainer_email: input_string("Enter the email of maintainer", "_"),
-        pkgname: input_string("Enter the name of package", "_"),
+        maintainer_name: input_string_strict("Enter the name of maintainer"),
+        maintainer_email: input_string_strict("Enter the email of maintainer"),
+        pkgname: input_string_strict("Enter the name of package"),
         pkgver: input_string("Enter the version of package(default: 1.0.0)", "1.0.0"),
         pkgrel: input_string("Enter the release number of package(default: 1)", "1"),
-        pkgdesc: input_string("Enter the description about package", "_"),
-        url: input_string("Enter the url of package", "_"),
-        license: input_string("Enter the license of package", "_"),
+        pkgdesc: input_string("Enter the description about package", ""),
+        url: input_string("Enter the url of package", ""),
+        license: input_string("Enter the license of package", ""),
         arch: match select_arch() {
             Some(s) => s,
             None => {
@@ -62,7 +61,7 @@ pub fn get_information() -> Option<Information> {
         source: match get_source() {
             Some(s) => s,
             None => {
-                println!("Source not given. Using default source.\n");
+                println!("Using default source.\n");
                 "$pkgname-$pkgver-$pkgrel.tar.gz".to_string()
             }
         },

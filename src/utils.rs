@@ -11,7 +11,7 @@ use reqwest;
 use sha256::try_digest;
 use tar::{Archive, Builder};
 
-/// input_string is a helper function to get string input from user efficiently
+/// input_string gets user input in the form of string, trims and then returns it
 pub fn input_string(prompt: &str, default: &str) -> String {
     let mut input = String::new();
 
@@ -27,12 +27,43 @@ pub fn input_string(prompt: &str, default: &str) -> String {
         }
     };
 
-    if input.trim().is_empty() {
+    // remove any extra whitespaces
+    input = input.trim().to_string();
+
+    if input.is_empty() {
         return default.to_string();
     }
 
-    // Trim the string to remove '\n'
-    input.trim().to_string()
+    input
+}
+
+/// input_string_strict is a more strict version of input_string, which gets string input from
+/// user and returns the trimmed string
+pub fn input_string_strict(prompt: &str) -> String {
+    loop {
+        let mut input = String::new();
+
+        println!("\n{}", prompt);
+        print!("> ");
+        io::stdout().flush().unwrap();
+
+        match io::stdin().read_line(&mut input) {
+            Ok(_) => (),
+            Err(e) => {
+                eprintln!("Unable to take input: {}.", e);
+                dead();
+            }
+        };
+
+        // remove any extra whitespaces
+        input = input.trim().to_string();
+
+        if !input.is_empty() {
+            return input;
+        } else {
+            eprintln!("This field is not optional. Try again.");
+        }
+    }
 }
 
 /// get_sha256 performs sha256 digest generation and returns it
@@ -96,7 +127,7 @@ pub fn select_arch() -> Option<String> {
     io::stdout().flush().unwrap(); // Flush the output correctly
 
     loop {
-        print!("  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually\n> ");
+        print!("  [1] x86_64(Default)    [2] i686    [3] any    [4] Enter manually [5] Enter manually (more than 1)\n> ");
         io::stdout().flush().unwrap();
         let mut input = String::new();
 
@@ -115,14 +146,27 @@ pub fn select_arch() -> Option<String> {
             2 => return Some("i686".to_string()),
             3 => return Some("any".to_string()),
             4 => {
+                let mut arch = String::new();
                 print!("Enter target architecture: ");
                 io::stdout().flush().unwrap();
 
                 io::stdin()
-                    .read_line(&mut input)
+                    .read_line(&mut arch)
                     .expect("Failed to get input.");
 
-                return Some(input.trim().to_string());
+                return Some(arch.trim().to_string());
+            }
+            5 => {
+                let mut arch = String::new();
+                print!("Enter target architecture: ");
+                io::stdout().flush().unwrap();
+
+                io::stdin()
+                    .read_line(&mut arch)
+                    .expect("Failed to get input.");
+
+                // nasty, but works
+                return Some(arch.trim().replace(" ", "' '").to_string());
             }
             _ => {
                 eprintln!("Invalid input. Try again");
