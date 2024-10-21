@@ -7,6 +7,7 @@ license = "MIT"
 keywords = ["utility", "cli", "aur", "arch"]
 authors = ["Mitesh H. Soni <smiteshhc@gmail.com>"]
 edition = "2021"
+repository = "https://github.com/miteshhc/aurders"
 
 [dependencies]
 clap = "4.5.20"
