@@ -46,6 +46,11 @@ Executable binary will built at `target/release/aurders`
     - git
     - makepkg
 
+### TODO:
+
+- [ ] Fix copying correct file to git repo: .pkg.tar.zst --> *.tar.gz
+- [ ] Fix indentation in build() and package() function in PKGBUILD
+
 
 ### How To Use
 
