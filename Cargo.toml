@@ -1,25 +1,13 @@
 [package]
 name = "aurders"
-version = "1.0.0"
+version = "2.0.0"
 description = "A simple helper for developers to make their packages ready-to-upload for Arch User Repository."
 readme = "README.md"
 license = "MIT"
 keywords = ["utility", "cli", "aur", "arch"]
 authors = ["Mitesh H. Soni <smiteshhc@gmail.com>"]
 edition = "2021"
-repository = "https://github.com/miteshhc/aurders"
+repository = "https://github.com/mithcs/aurders"
 
 [dependencies]
-clap = "4.5.20"
-sha256 = "1.5.0"
-tar = "0.4.42"
-flate2 = "1.0.34"
-reqwest = { version = "0.12.8", features = ["blocking"] }
-
-[profile.dev]
-strip = "none"
-panic = "unwind"
-
-[profile.release]
-strip = "symbols"
-panic = "unwind"
+inquire = "0.7.5"
