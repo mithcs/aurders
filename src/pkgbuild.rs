@@ -1,9 +1,13 @@
 use inquire::list_option::ListOption;
 use inquire::validator::Validation;
-use inquire::{required, min_length, MultiSelect, Select, Text};
+use inquire::{min_length, required, Confirm, MultiSelect, Select, Text};
 
 /// This function generates the pkgbuild
 pub fn pkgbuild() {
+    // ////////////////////
+    // Fields
+    // ////////////////////
+
     let (maintainer_name, maintainer_email) = get_maintainer();
     println!("Got {maintainer_name}, {maintainer_email}");
 
@@ -31,14 +35,16 @@ pub fn pkgbuild() {
     let license = get_license();
     println!("Got {license}");
 
-    let (sources, i) = get_source();
-    println!("Total {i}");
+    let (sources, source_count) = get_source();
+    println!("Total {source_count}");
     for source in sources {
         println!("Got {source}");
     }
 
-    let sums = get_sums();
-    println!("Got {sums}");
+    let sums = get_sums(source_count);
+    for sum in sums {
+        println!("Got {sum}");
+    }
 
     let install = get_install();
     println!("Got {install}");
@@ -70,6 +76,10 @@ pub fn pkgbuild() {
     let backup = get_backup();
     println!("Got {backup}");
 
+    // ////////////////////
+    // Functions
+    // ////////////////////
+
     let prepare = get_prepare();
     println!("Got {prepare}");
 
@@ -82,6 +92,10 @@ pub fn pkgbuild() {
     let package = get_package();
     println!("Got {package}");
 }
+
+// ////////////////////
+// Fields
+// ////////////////////
 
 /// This function gets maintainer name and email
 fn get_maintainer() -> (String, String) {
@@ -201,8 +215,33 @@ fn get_url() -> String {
 }
 
 /// This function gets sums from user and returns it
-fn get_sums() -> String {
-    return "hello from get_sums()".to_string();
+fn get_sums(source_count: u16) -> Vec<String> {
+    let sum_types = vec!["MD5", "SHA256", "SHA512", "SHA1", "SHA224", "SHA386", "B2"];
+
+    let sum_type = Select::new("Select type of checksum", sum_types)
+        .with_help_message("Select which integrity checks to use")
+        .with_vim_mode(true)
+        .prompt()
+        .unwrap();
+
+    println!("Type -> {sum_type}");
+
+    let mut checksums: Vec<String> = vec![];
+    for count in 1..=source_count {
+        let should_continue =
+            Confirm::new(format!("Perform integrity check for source {count}").as_str())
+                .with_help_message("Press 'n' to SKIP")
+                .prompt()
+                .unwrap();
+
+        if should_continue {
+            checksums.push("CHECKSUM".to_string())
+        } else {
+            checksums.push("SKIP".to_string())
+        }
+    }
+
+    return checksums;
 }
 
 /// This function gets install from user and returns it
@@ -214,16 +253,16 @@ fn get_install() -> String {
 }
 
 /// This function gets source from user and returns it
-fn get_source() -> (Vec<String>, u8) {
+fn get_source() -> (Vec<String>, u16) {
     let mut sources: Vec<String> = vec![];
 
     let mut source: String;
-    let mut i: u8 = 0;
+    let mut i: u16 = 0;
 
     loop {
         i += 1;
         source = Text::new(format!("Enter source {i}").as_str())
-            .with_validator(if i > 1 { min_length!(0) } else { min_length!(2) })
+            .with_validator(if i > 1 { min_length!(0) } else { min_length!(1) })
             .with_help_message("Must reside in same directory as the PKGBUILD, or be a URL that makepkg can use to download the file.\nPress enter again to exit.")
             .prompt()
             .unwrap();
@@ -281,6 +320,10 @@ fn get_license() -> String {
 }
 
 // should do?; groups
+
+// ////////////////////
+// Functions
+// ////////////////////
 
 /// This function gets depends from user and returns it
 fn get_depends() -> String {
