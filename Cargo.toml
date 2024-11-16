@@ -10,4 +10,4 @@ edition = "2021"
 repository = "https://github.com/mithcs/aurders"
 
 [dependencies]
-inquire = "0.7.5"
+inquire = { version = "0.7.5", features = ["editor"] }
