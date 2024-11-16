@@ -1,121 +1,134 @@
+use std::fmt;
 use inquire::list_option::ListOption;
 use inquire::validator::Validation;
 use inquire::{min_length, required, Confirm, MultiSelect, Select, Text};
 
-/// This function generates the pkgbuild
-pub fn pkgbuild() {
-    // ////////////////////
-    // Fields
-    // ////////////////////
+const DELIMETER: &str = " ";
 
-    let (maintainer_name, maintainer_email) = get_maintainer();
-    println!("Got {maintainer_name}, {maintainer_email}");
+#[allow(dead_code)]
+pub struct PKGBUILD {
+    maintainer_name: String,
+    maintainer_email: String,
+    pkgname: String,
+    pkgver: String,
+    pkgrel: String,
+    epoch: String,
+    pkgdesc: String,
+    arch: Vec<String>,
+    url: String,
+    sources: Vec<String>,
+    checksums: Vec<String>,
+    install: String,
+    changelog: String,
+    license: Vec<String>,
+    depends: Vec<String>,
+    makedepends: Vec<String>,
+    checkdepends: Vec<String>,
+    optdepends: Vec<String>,
+    conflicts: Vec<String>,
+    provides: Vec<String>,
+    replaces: Vec<String>,
+    backup: Vec<String>,
 
-    let pkgname = get_pkgname();
-    println!("Got {pkgname}");
-
-    let pkgver = get_pkgver();
-    println!("Got {pkgver}");
-
-    let pkgrel = get_pkgrel();
-    println!("Got {pkgrel}");
-
-    let epoch = get_epoch();
-    println!("Got {epoch}");
-
-    let pkgdesc = get_pkgdesc();
-    println!("Got {pkgdesc}");
-
-    let arch = get_arch();
-    println!("Got {arch}");
-
-    let url = get_url();
-    println!("Got {url}");
-
-    let license = get_license();
-    println!("Got {license}");
-
-    let (sources, source_count) = get_source();
-    println!("Total {source_count}");
-    for source in sources {
-        println!("Got {source}");
-    }
-
-    let sums = get_sums(source_count);
-    for sum in sums {
-        println!("Got {sum}");
-    }
-
-    let install = get_install();
-    println!("Got {install}");
-
-    let changelog = get_changelog();
-    println!("Got {changelog}");
-
-    let depends = get_depends();
-    println!("Got {depends}");
-
-    let makedepends = get_makedepends();
-    println!("Got {makedepends}");
-
-    let checkdepends = get_checkdepends();
-    println!("Got {checkdepends}");
-
-    let optdepends = get_optdepends();
-    println!("Got {optdepends}");
-
-    let conflicts = get_conflicts();
-    println!("Got {conflicts}");
-
-    let provides = get_provides();
-    println!("Got {provides}");
-
-    let replaces = get_replaces();
-    println!("Got {replaces}");
-
-    let backup = get_backup();
-    println!("Got {backup}");
-
-    // ////////////////////
-    // Functions
-    // ////////////////////
-
-    let prepare = get_prepare();
-    println!("Got {prepare}");
-
-    let build = get_build();
-    println!("Got {build}");
-
-    let check = get_check();
-    println!("Got {check}");
-
-    let package = get_package();
-    println!("Got {package}");
+    prepare: Vec<String>,
+    build: Vec<String>,
+    check: Vec<String>,
+    package: Vec<String>,
 }
 
-// ////////////////////
-// Fields
-// ////////////////////
+/// Prints Hello, World
+pub fn pkgbuild() {
+    let mypkgbuild = PKGBUILD {
+        maintainer_name: get_maintainer_name_input(),
+        maintainer_email: get_maintainer_email_input(),
+        pkgname: get_pkgname_input(),
+        pkgver: get_pkgver_input(),
+        pkgrel: get_pkgrel_input(),
+        epoch: get_epoch_input(),
+        pkgdesc: get_pkgdesc_input(),
+        arch: get_arch_input(),
+        url: get_url_input(),
+        sources: get_sources_input(),
+        checksums: get_checksums_input(),
+        install: get_install_input(),
+        changelog: get_changelog_input(),
+        license: get_license_input(),
+        depends: get_depends_input(),
+        makedepends: get_makedepends_input(),
+        checkdepends: get_checkdepends_input(),
+        optdepends: get_optdepends_input(),
+        conflicts: get_conflicts_input(),
+        provides: get_provides_input(),
+        replaces: get_replaces_input(),
+        backup: get_backup_input(),
 
-/// This function gets maintainer name and email
-fn get_maintainer() -> (String, String) {
-    let name = Text::new("Enter maintainer name")
+        prepare: get_prepare_input(),
+        build: get_build_input(),
+        check: get_check_input(),
+        package: get_package_input()
+    };
+
+    println!("Hello, World");
+    println!("GOT {:#?}", mypkgbuild);
+}
+
+// DEBUG IMPLEMENTATION
+impl fmt::Debug for PKGBUILD {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PKGBUILD")
+            .field("maintainer_name", &self.maintainer_name)
+            .field("maintainer_email", &self.maintainer_email)
+            .field("pkgname", &self.pkgname)
+            .field("pkgver", &self.pkgver)
+            .field("pkgrel", &self.pkgrel)
+            .field("epoch", &self.epoch)
+            .field("pkgdesc", &self.pkgdesc)
+            .field("arch", &self.arch)
+            .field("url", &self.url)
+            .field("checksums", &self.checksums)
+            .field("install", &self.install)
+            .field("sources", &self.sources)
+            .field("changelog", &self.changelog)
+            .field("license", &self.license)
+            .field("depends", &self.depends)
+            .field("makedepends", &self.makedepends)
+            .field("checkdepends", &self.checkdepends)
+            .field("optdepends", &self.optdepends)
+            .field("conflicts", &self.conflicts)
+            .field("provides", &self.provides)
+            .field("replaces", &self.replaces)
+            .field("backup", &self.backup)
+            .field("prepare", &self.prepare)
+            .field("build", &self.build)
+            .field("check", &self.check)
+            .field("package", &self.package)
+            .finish()
+    }
+}
+
+/// Gets maintainer name and return it
+#[allow(dead_code)]
+fn get_maintainer_name_input() -> String {
+    return Text::new("Enter maintainer name")
         .with_help_message("The name of the maintainer")
         .with_validator(required!())
         .prompt()
         .unwrap();
+}
 
-    let email = Text::new("Enter maintainer email")
+/// Gets maintainer email and return it
+#[allow(dead_code)]
+fn get_maintainer_email_input() -> String {
+    return Text::new("Enter maintainer email")
         .with_help_message("The email of the maintainer")
         .with_validator(required!())
         .prompt()
         .unwrap();
-
-    return (name, email);
 }
 
-/// This function gets pkgname from user and returns it
-fn get_pkgname() -> String {
+/// Gets pkgname from user and returns it
+#[allow(dead_code)]
+fn get_pkgname_input() -> String {
     return Text::new("Enter pkgname")
         .with_help_message("The name of the package")
         .with_validator(required!())
@@ -123,8 +136,9 @@ fn get_pkgname() -> String {
         .unwrap();
 }
 
-/// This function gets pkgver from user and returns it
-fn get_pkgver() -> String {
+/// Gets pkgver from user and returns it
+#[allow(dead_code)]
+fn get_pkgver_input() -> String {
     return Text::new("Enter pkgver")
         .with_help_message("The version of software as released from the author")
         .with_validator(required!())
@@ -132,8 +146,9 @@ fn get_pkgver() -> String {
         .unwrap();
 }
 
-/// This function gets pkgrel from user and returns it
-fn get_pkgrel() -> String {
+/// Gets pkgrel from user and returns it
+#[allow(dead_code)]
+fn get_pkgrel_input() -> String {
     return Text::new("Enter pkgrel")
         .with_default("1")
         .with_help_message("The release number specific to the distribution")
@@ -141,16 +156,19 @@ fn get_pkgrel() -> String {
         .unwrap();
 }
 
-/// This function gets epoch from user and returns it
-fn get_epoch() -> String {
+/// Gets epoch from user and returns it
+#[allow(dead_code)]
+fn get_epoch_input() -> String {
     return Text::new("Enter epoch")
+        .with_default("0")
         .with_help_message("Used to force package to be seen as newer than previous versino")
         .prompt()
         .unwrap();
 }
 
-/// This function gets pkgdesc from user and returns it
-fn get_pkgdesc() -> String {
+/// Gets pkgdesc from user and returns it
+#[allow(dead_code)]
+fn get_pkgdesc_input() -> String {
     return Text::new("Enter pkgdesc")
         .with_validator(required!())
         .with_help_message("Brief description of the package")
@@ -158,8 +176,9 @@ fn get_pkgdesc() -> String {
         .unwrap();
 }
 
-/// This function gets target arch from user and returns it
-fn get_arch() -> String {
+/// Gets target arch from user and returns it
+#[allow(dead_code)]
+fn get_arch_input() -> Vec<String> {
     let options = vec!["x86_64", "i686", "any", "Custom"];
 
     let validator = |a: &[ListOption<&&str>]| {
@@ -177,45 +196,42 @@ fn get_arch() -> String {
         .prompt()
         .unwrap();
 
-    let mut arch = String::new();
+    let mut arch: Vec<String> = Vec::new();
 
     for architecture in architectures {
         match architecture {
-            "any" => {
-                arch = "'any'".to_string();
-                break;
-            }
+            "any" => arch = Vec::from(["any".to_string()]),
             "Custom" => {
                 let customs = Text::new("Enter custom architecture")
-                    .with_validator(required!())
-                    .prompt()
-                    .unwrap();
+                            .prompt()
+                            .unwrap();
 
-                let custom_iter = customs.split(" ");
+                let customs_split = customs.split(DELIMETER);
 
-                for custom in custom_iter {
-                    arch = arch + "'" + custom + "' ";
+                for custom in customs_split {
+                    arch.push(custom.to_string());
                 }
-
-                break;
             }
-            _ => arch = arch + "'" + architecture + "' ",
+            _ => arch.push(architecture.to_string()),
         };
     }
 
-    return arch.trim().to_string();
+    return arch;
 }
 
-/// This function gets url from user and returns it
-fn get_url() -> String {
+/// Gets url from user and returns it
+#[allow(dead_code)]
+fn get_url_input() -> String {
     return Text::new("Enter url")
         .with_help_message("Enter the url associated with the software")
         .prompt()
         .unwrap();
 }
 
-/// This function gets sums from user and returns it
-fn get_sums(source_count: u16) -> Vec<String> {
+/// Gets sums from user and returns it
+#[allow(dead_code)]
+fn get_checksums_input() -> Vec<String> {
+    let source_count = 1; // TODO
     let sum_types = vec!["MD5", "SHA256", "SHA512", "SHA1", "SHA224", "SHA386", "B2"];
 
     let sum_type = Select::new("Select type of checksum", sum_types)
@@ -226,7 +242,7 @@ fn get_sums(source_count: u16) -> Vec<String> {
 
     println!("Type -> {sum_type}");
 
-    let mut checksums: Vec<String> = vec![];
+    let mut checksums: Vec<String> = Vec::new();
     for count in 1..=source_count {
         let should_continue =
             Confirm::new(format!("Perform integrity check for source {count}").as_str())
@@ -244,20 +260,22 @@ fn get_sums(source_count: u16) -> Vec<String> {
     return checksums;
 }
 
-/// This function gets install from user and returns it
-fn get_install() -> String {
+/// Gets install from user and returns it
+#[allow(dead_code)]
+fn get_install_input() -> String {
     return Text::new("Enter install")
         .with_help_message("Special install script that is to be included in the package.")
         .prompt()
         .unwrap();
 }
 
-/// This function gets source from user and returns it
-fn get_source() -> (Vec<String>, u16) {
-    let mut sources: Vec<String> = vec![];
+/// Gets source from user and returns it
+#[allow(dead_code)]
+fn get_sources_input() -> Vec<String> {
+    let mut sources: Vec<String> = Vec::new();
 
     let mut source: String;
-    let mut i: u16 = 0;
+    let mut i: u8 = 0;
 
     loop {
         i += 1;
@@ -268,26 +286,28 @@ fn get_source() -> (Vec<String>, u16) {
             .unwrap();
 
         if source == "" {
-            i -= 1;
             break;
         } else {
             sources.push(source.clone());
         }
     }
 
-    return (sources, i);
+    return sources;
 }
 
-/// This function gets changelog from user and returns it
-fn get_changelog() -> String {
+/// Gets changelog from user and returns it
+#[allow(dead_code)]
+fn get_changelog_input() -> String {
     return Text::new("Enter changelog")
             .with_help_message("Changelog file that is to be included in the package. Should reside in same dir as PKGBUILD. No need to be included in source")
-            .prompt().unwrap();
+            .prompt()
+            .unwrap();
 }
 
-/// This function gets license from user and returns it
-fn get_license() -> String {
-    let licenses = vec![
+/// Gets license from user and returns it
+#[allow(dead_code)]
+fn get_license_input() -> Vec<String> {
+    let license_options = vec![
         "MIT",
         "GPL-3.0",
         "GPL-2.0",
@@ -302,116 +322,209 @@ fn get_license() -> String {
         "Custom",
     ];
 
-    let license = Select::new("Select license", licenses)
+    let mut licenses_selected: Vec<String> = Vec::new();
+
+    let licenses = MultiSelect::new("Select license(s)", license_options)
+        .with_help_message("License(s) that apply to the package")
         .with_vim_mode(true)
-        .with_help_message("Select license of package")
         .prompt()
         .unwrap();
 
-    match license {
-        "Custom" => {
-            return Text::new("Enter custom architecture")
-                .with_validator(required!())
-                .prompt()
-                .unwrap();
-        }
-        _ => return license.to_string(),
-    };
+    for license in licenses {
+        match license {
+            "Custom" => licenses_selected.push(
+                Text::new("Enter custom license(s)")
+                    .with_validator(required!())
+                    .prompt()
+                    .unwrap(),
+            ),
+            _ => licenses_selected.push(license.to_string()),
+        };
+    }
+
+    return licenses_selected;
 }
 
-// should do?; groups
+// groups here
 
-// ////////////////////
-// Functions
-// ////////////////////
-
-/// This function gets depends from user and returns it
-fn get_depends() -> String {
-    return Text::new("Enter dependencies of this package")
-        .with_help_message("Packages this package depends on to run")
+/// Gets depends from user and returns it
+#[allow(dead_code)]
+fn get_depends_input() -> Vec<String> {
+    let depends = Text::new("Enter dependencies of this package")
+        .with_help_message("Packages this package depends on to run. Separated by comma (,)")
         .prompt()
         .unwrap();
+
+    let depends_split = depends.split(DELIMETER);
+
+    let mut dependencies: Vec<String> = Vec::new();
+    for dependency in depends_split {
+        dependencies.push(dependency.to_string());
+    }
+
+    return dependencies;
 }
 
-/// This function gets make depends from user and returns it
-fn get_makedepends() -> String {
-    return Text::new("Enter make dependencies of this package")
+/// Gets make depends from user and returns it
+#[allow(dead_code)]
+fn get_makedepends_input() -> Vec<String> {
+    let makedepends = Text::new("Enter make dependencies of this package")
+        .with_help_message("Packages this package depends on to build but are not needed at runtime. Separated by comma (,)")
+        .prompt()
+        .unwrap();
+
+    let makedepends_split = makedepends.split(DELIMETER);
+
+    let mut make_dependencies: Vec<String> = Vec::new();
+    for dependency in makedepends_split {
+        make_dependencies.push(dependency.to_string());
+    }
+
+    return make_dependencies;
+}
+
+/// Gets check depends from user and returns it
+#[allow(dead_code)]
+fn get_checkdepends_input() -> Vec<String> {
+    let checkdepends = Text::new("Enter check dependencies of this package")
+        .with_help_message("Packages this package depends on to run its test suite but are not needed at runtime. Separated by comma (,)")
+        .prompt()
+        .unwrap();
+
+    let checkdepends_split = checkdepends.split(DELIMETER);
+
+    let mut check_dependencies: Vec<String> = Vec::new();
+    for dependency in checkdepends_split {
+        check_dependencies.push(dependency.to_string());
+    }
+
+    return check_dependencies;
+}
+
+/// Gets opt depends from user and returns it
+#[allow(dead_code)]
+fn get_optdepends_input() -> Vec<String> {
+    let optdepends = Text::new("Enter opt dependencies of this package")
+        .with_help_message("Packages that are not essential for base functionality, but may be necessary to make full use of the contents of this package. Separated by comma (,)")
+        .prompt()
+        .unwrap();
+
+    let optdepends_split = optdepends.split(DELIMETER);
+
+    let mut opt_dependencies: Vec<String> = Vec::new();
+    for dependency in optdepends_split {
+        opt_dependencies.push(dependency.to_string());
+    }
+
+    return opt_dependencies;
+}
+
+/// Gets conflics from user and returns it
+#[allow(dead_code)]
+fn get_conflicts_input() -> Vec<String> {
+    let conflicts = Text::new("Enter conflicts")
+        .with_help_message("Packages that will conflict with this package. Separated by comma (,)")
+        .prompt()
+        .unwrap();
+
+    let conflicts_split = conflicts.split(DELIMETER);
+
+    let mut conflicts_vec: Vec<String> = Vec::new();
+
+    for conflict in conflicts_split {
+        conflicts_vec.push(conflict.to_string());
+    }
+
+    return conflicts_vec;
+}
+
+/// Gets provides from user and returns it
+#[allow(dead_code)]
+fn get_provides_input() -> Vec<String> {
+    let provides = Text::new("Enter provides")
         .with_help_message(
-            "Packages this package depends on to build but are not needed at runtime",
+            "Virtual provisions/packages that this package provides. Separated by comma (,)",
         )
         .prompt()
         .unwrap();
+
+    let provides_split = provides.split(DELIMETER);
+
+    let mut provides_vec: Vec<String> = Vec::new();
+
+    for provide in provides_split {
+        provides_vec.push(provide.to_string());
+    }
+
+    return provides_vec;
 }
 
-/// This function gets check depends from user and returns it
-fn get_checkdepends() -> String {
-    return Text::new("Enter check dependencies of this package")
+/// Gets provides from user and returns it
+#[allow(dead_code)]
+fn get_replaces_input() -> Vec<String> {
+    let replaces = Text::new("Enter replaces")
         .with_help_message(
-            "Packages this package depends on to run its test suite but are not needed at runtime",
+            "Packages that this package should replace. Used to handle renamed/combined packages. Separated by comma (,)",
         )
         .prompt()
         .unwrap();
+
+    let replaces_split = replaces.split(DELIMETER);
+
+    let mut replaces_vec: Vec<String> = Vec::new();
+
+    for replace in replaces_split {
+        replaces_vec.push(replace.to_string());
+    }
+
+    return replaces_vec;
 }
 
-/// This function gets opt depends from user and returns it
-fn get_optdepends() -> String {
-    return Text::new("Enter opt dependencies of this package")
-            .with_help_message("Packages that are not essential for base functionality, but may be necessary to make full use of the contents of this package")
-            .prompt().unwrap();
-}
+// options here
 
-/// This function gets conflics from user and returns it
-fn get_conflicts() -> String {
-    return Text::new("Enter conflicts")
-        .with_help_message("Packages that will conflict with this package")
+/// Gets backup from user and returns it
+#[allow(dead_code)]
+fn get_backup_input() -> Vec<String> {
+    let backups = Text::new("Enter backup")
+        .with_help_message("Files that should be backed up if the package is removed or upgraded. Separated by comma (,)")
         .prompt()
         .unwrap();
+
+    let backups_split = backups.split(DELIMETER);
+
+    let mut backups_vec: Vec<String> = Vec::new();
+
+    for backup in backups_split {
+        backups_vec.push(backup.to_string());
+    }
+
+    return backups_vec;
 }
 
-/// This function gets provides from user and returns it
-fn get_provides() -> String {
-    return Text::new("Enter provides")
-        .with_help_message("Virtual provisions/packages that this package provides")
-        .prompt()
-        .unwrap();
+/// Gets prepare function from user and returns it
+#[allow(dead_code)]
+fn get_prepare_input() -> Vec<String> {
+    let todo: Vec<String> = Vec::new();
+    return todo;
 }
 
-/// This function gets provides from user and returns it
-fn get_replaces() -> String {
-    return Text::new("Enter replaces")
-        .with_help_message(
-            "Packages that this package should replace. Used to handle renamed/combined packages",
-        )
-        .prompt()
-        .unwrap();
+/// Gets build function from user and returns it
+#[allow(dead_code)]
+fn get_build_input() -> Vec<String> {
+    let todo: Vec<String> = Vec::new();
+    return todo;
 }
 
-// should do?; options
-
-/// This function gets backup from user and returns it
-fn get_backup() -> String {
-    return Text::new("Enter backup")
-        .with_help_message("Files that should be backed up if the package is removed or upgraded.")
-        .prompt()
-        .unwrap();
+/// Gets check function from user and returns it
+#[allow(dead_code)]
+fn get_check_input() -> Vec<String> {
+    let todo: Vec<String> = Vec::new();
+    return todo;
 }
 
-/// This function gets prepare function from user and returns it
-fn get_prepare() -> String {
-    return "Hello from get_prepare()".to_string();
-}
-
-/// This function gets build function from user and returns it
-fn get_build() -> String {
-    return "Hello from get_build()".to_string();
-}
-
-/// This function gets check function from user and returns it
-fn get_check() -> String {
-    return "Hello from get_check()".to_string();
-}
-
-/// This function gets package function from user and returns it
-fn get_package() -> String {
-    return "Hello from get_package()".to_string();
+/// Gets package function from user and let
+#[allow(dead_code)]
+fn get_package_input() -> Vec<String> {
+    let todo: Vec<String> = Vec::new();
+    return todo;
 }
