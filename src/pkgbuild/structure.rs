@@ -99,36 +99,38 @@ impl fmt::Display for PKGBUILD {
 
 #[allow(dead_code)]
 impl PKGBUILD {
-    // ////////////////////////////////////////
-    // SETTERS
-    // ////////////////////////////////////////
-
     /// Setter for maintainer_name, and maintainer_email fields
     fn set_maintainer_details(&mut self) {
         self.maintainer_name = user_input::get_maintainer_name_input();
         self.maintainer_email = user_input::get_maintainer_email_input();
     }
 
+    /// Setter for pkgname field
     fn set_pkgname(&mut self) {
         self.pkgname = user_input::get_pkgname_input();
     }
 
+    /// Setter for pkgver field
     fn set_pkgver(&mut self) {
         self.pkgver = user_input::get_pkgver_input();
     }
 
+    /// Setter for pkgrel field
     fn set_pkgrel(&mut self) {
         self.pkgrel = user_input::get_pkgrel_input();
     }
 
+    /// Setter for epoch field
     fn set_epoch(&mut self) {
         self.epoch = user_input::get_epoch_input();
     }
 
+    /// Setter for pkgdesc field
     fn set_pkgdesc(&mut self) {
         self.pkgdesc = user_input::get_pkgdesc_input();
     }
 
+    /// Setter for arch field
     fn set_arch(&mut self) {
         let mut architectures: String = String::from("(");
 
@@ -142,12 +144,14 @@ impl PKGBUILD {
         self.arch = architectures;
     }
 
+    /// Setter for url field
     fn set_url(&mut self) {
         self.url = user_input::get_url_input();
     }
 
     // TODO: handle whitespaces correctly after \n, for indentation.
 
+    /// Setter for sources field
     fn set_sources(&mut self) {
         let mut sources: String = String::from("(");
 
@@ -168,6 +172,7 @@ impl PKGBUILD {
         self.sources = sources;
     }
 
+    /// Setter for checksums field
     fn set_checksums(&mut self) {
         let mut checksums: String = String::from("(");
 
@@ -181,14 +186,17 @@ impl PKGBUILD {
         self.checksums = checksums;
     }
 
+    /// Setter for install field
     fn set_install(&mut self) {
         self.install = user_input::get_install_input();
     }
 
+    /// Setter for changelog field
     fn set_changelog(&mut self) {
         self.changelog = user_input::get_changelog_input();
     }
 
+    /// Setter for license field
     fn set_license(&mut self) {
         let mut licenses: String = String::from("(");
 
@@ -202,6 +210,7 @@ impl PKGBUILD {
         self.license = licenses;
     }
 
+    /// Setter for depends field
     fn set_depends(&mut self) {
         let mut depends: String = String::from("(");
 
@@ -215,6 +224,7 @@ impl PKGBUILD {
         self.depends = depends;
     }
 
+    /// Setter for makedepends field
     fn set_makedepends(&mut self) {
         let mut makedepends: String = String::from("(");
 
@@ -228,6 +238,7 @@ impl PKGBUILD {
         self.makedepends = makedepends;
     }
 
+    /// Setter for checkdepends field
     fn set_checkdepends(&mut self) {
         let mut checkdepends: String = String::from("(");
 
@@ -241,6 +252,7 @@ impl PKGBUILD {
         self.checkdepends = checkdepends;
     }
 
+    /// Setter for optdepends field
     fn set_optdepends(&mut self) {
         let mut optdepends: String = String::from("(");
 
@@ -256,6 +268,7 @@ impl PKGBUILD {
         self.optdepends = optdepends;
     }
 
+    /// Setter for conflicts field
     fn set_conflicts(&mut self) {
         let mut conflicts: String = String::from("(");
 
@@ -269,6 +282,7 @@ impl PKGBUILD {
         self.conflicts = conflicts;
     }
 
+    /// Setter for provides field
     fn set_provides(&mut self) {
         let mut provides: String = String::from("(");
 
@@ -282,6 +296,7 @@ impl PKGBUILD {
         self.provides = provides;
     }
 
+    /// Setter for replaces field
     fn set_replaces(&mut self) {
         let mut replaces: String = String::from("(");
 
@@ -295,6 +310,7 @@ impl PKGBUILD {
         self.replaces = replaces;
     }
 
+    /// Setter for backup field
     fn set_backup(&mut self) {
         let mut backups: String = String::from("(");
 
@@ -310,6 +326,7 @@ impl PKGBUILD {
         self.backup = backups;
     }
 
+    /// Setter for prepare field
     fn set_prepare(&mut self) {
         let mut prepare: String = String::new();
 
@@ -322,6 +339,7 @@ impl PKGBUILD {
         self.prepare = prepare.trim().to_string();
     }
 
+    /// Setter for build field
     fn set_build(&mut self) {
         let mut build: String = String::new();
 
@@ -334,6 +352,7 @@ impl PKGBUILD {
         self.build = build.trim().to_string();
     }
 
+    /// Setter for check field
     fn set_check(&mut self) {
         let mut check: String = String::new();
 
@@ -346,6 +365,7 @@ impl PKGBUILD {
         self.check = check.trim().to_string();
     }
 
+    /// Setter for package field
     fn set_package(&mut self) {
         let mut package: String = String::new();
 
@@ -356,113 +376,5 @@ impl PKGBUILD {
         }
 
         self.package = package.trim().to_string();
-    }
-
-    // ////////////////////////////////////////
-    // GETTERS
-    // ////////////////////////////////////////
-
-    fn get_maintainer_name(&self) -> String {
-        todo!();
-    }
-
-    fn get_maintainer_email(&self) -> String {
-        todo!();
-    }
-
-    fn get_pkgname(&self) -> String {
-        todo!();
-    }
-
-    fn get_pkgver(&self) -> String {
-        todo!();
-    }
-
-    fn get_pkgrel(&self) -> String {
-        todo!();
-    }
-
-    fn get_epoch(&self) -> String {
-        todo!();
-    }
-
-    fn get_pkgdesc(&self) -> String {
-        todo!();
-    }
-
-    fn get_arch(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_url(&self) -> String {
-        todo!();
-    }
-
-    fn get_source(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_checksums(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_install(&self) -> String {
-        todo!();
-    }
-
-    fn get_changelog(&self) -> String {
-        todo!();
-    }
-
-    fn get_license(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_depends(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_makedepends(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_checkdepends(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_optdepends(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_conflicts(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_provides(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_replaces(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_backup(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_prepare(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_build(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_check(&self) -> Vec<String> {
-        todo!();
-    }
-
-    fn get_package(&self) -> Vec<String> {
-        todo!();
     }
 }
