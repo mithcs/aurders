@@ -378,24 +378,104 @@ pub fn get_backup_input() -> Vec<String> {
 
 /// Gets prepare function from user and returns it
 pub fn get_prepare_input() -> Vec<String> {
-    let todo: Vec<String> = Vec::new();
-    return todo;
+    println!();
+
+    let mut prepare_vec: Vec<String> = Vec::new();
+    let mut prepare: String;
+    let mut i: u8 = 1;
+
+    loop {
+        prepare = Text::new(format!("Enter statement {i} in prepare()").as_str())
+            .with_help_message("It is specified in which operations to prepare the sources for building, such as patching, are performed.")
+            .prompt()
+            .unwrap();
+
+        i += 1;
+
+        if prepare == "" {
+            break;
+        } else {
+            prepare_vec.push(prepare);
+        }
+    }
+
+    return prepare_vec;
 }
 
 /// Gets build function from user and returns it
 pub fn get_build_input() -> Vec<String> {
-    let todo: Vec<String> = Vec::new();
-    return todo;
+    println!();
+
+    let mut build_vec: Vec<String> = Vec::new();
+    let mut build: String;
+    let mut i: u8 = 1;
+
+    loop {
+        build = Text::new(format!("Enter statement {i} in build()").as_str())
+            .with_help_message("It is used to compile and/or adjust the source in preparetion to be installed by this function.")
+            .prompt()
+            .unwrap();
+
+        i += 1;
+
+        if build == "" {
+            break;
+        } else {
+            build_vec.push(build);
+        }
+    }
+
+    return build_vec;
 }
 
 /// Gets check function from user and returns it
 pub fn get_check_input() -> Vec<String> {
-    let todo: Vec<String> = Vec::new();
-    return todo;
+    println!();
+
+    let mut check_vec: Vec<String> = Vec::new();
+    let mut check: String;
+    let mut i: u8 = 1;
+
+    loop {
+        check = Text::new(format!("Enter statement {i} in check()").as_str())
+            .with_help_message("It is specified in which a package's test-suite may run. It is ran between the build() and package() function.")
+            .prompt()
+            .unwrap();
+
+        i += 1;
+
+        if check == "" {
+            break;
+        } else {
+            check_vec.push(check);
+        }
+    }
+
+    return check_vec;
 }
 
 /// Gets package function from user and let
 pub fn get_package_input() -> Vec<String> {
-    let todo: Vec<String> = Vec::new();
-    return todo;
+    println!();
+
+    let mut package_vec: Vec<String> = Vec::new();
+    let mut package: String;
+    let mut i: u8 = 1;
+
+    loop {
+        package = Text::new(format!("Enter statement {i} in package()").as_str())
+            .with_help_message("This function is used to install files into the directory that will become the root directory of the built package.")
+            .prompt()
+            .unwrap();
+
+        i += 1;
+
+        if package == "" {
+            break;
+        } else {
+            package_vec.push(package);
+        }
+    }
+
+    return package_vec;
 }

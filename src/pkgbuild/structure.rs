@@ -1,6 +1,7 @@
 use std::fmt;
 
 /// Main structure type of PKGBUILD
+#[derive(Default)]
 pub struct PKGBUILD {
     pub maintainer_name: String,
     pub maintainer_email: String,
@@ -94,3 +95,224 @@ impl fmt::Display for PKGBUILD {
     }
 }
 
+#[allow(dead_code)]
+impl PKGBUILD {
+
+    // ////////////////////////////////////////
+    // SETTERS
+    // ////////////////////////////////////////
+
+    fn set_maintainer_name(&self) -> bool {
+        return true;
+    }
+
+    fn set_maintainer_email(&self) -> bool {
+        return true;
+    }
+
+    fn set_pkgname(&self) -> bool {
+        return true;
+    }
+
+    fn set_pkgver(&self) -> bool {
+        return true;
+    }
+
+    fn set_pkgrel(&self) -> bool {
+        return true;
+    }
+
+    fn set_epoch(&self) -> bool {
+        return true;
+    }
+
+    fn set_pkgdesc(&self) -> bool {
+        return true;
+    }
+
+    fn set_arch(&self) -> bool {
+        return true;
+    }
+
+    fn set_url(&self) -> bool {
+        return true;
+    }
+
+    fn set_source(&self) -> bool {
+        return true;
+    }
+
+    fn set_checksum(&self) -> bool {
+        return true;
+    }
+
+    fn set_install(&self) -> bool {
+        return true;
+    }
+
+    fn set_changelog(&self) -> bool {
+        return true;
+    }
+
+    fn set_license(&self) -> bool {
+        return true;
+    }
+
+    fn set_depends(&self) -> bool {
+        return true;
+    }
+
+    fn set_makedepends(&self) -> bool {
+        return true;
+    }
+
+    fn set_checkdepends(&self) -> bool {
+        return true;
+    }
+
+    fn set_optdepends(&self) -> bool {
+        return true;
+    }
+
+    fn set_conflicts(&self) -> bool {
+        return true;
+    }
+
+    fn set_provides(&self) -> bool {
+        return true;
+    }
+
+    fn set_replaces(&self) -> bool {
+        return true;
+    }
+
+    fn set_backup(&self) -> bool {
+        return true;
+    }
+
+
+    fn set_prepare(&self) -> bool {
+        return true;
+    }
+
+    fn set_build(&self) -> bool {
+        return true;
+    }
+
+    fn set_check(&self) -> bool {
+        return true;
+    }
+
+    fn set_package(&self) -> bool {
+        return true;
+    }
+
+    // ////////////////////////////////////////
+    // GETTERS
+    // ////////////////////////////////////////
+
+    fn get_maintainer_name(&self) -> String {
+        todo!();
+    }
+
+    fn get_maintainer_email(&self) -> String {
+        todo!();
+    }
+
+    fn get_pkgname(&self) -> String {
+        todo!();
+    }
+
+    fn get_pkgver(&self) -> String {
+        todo!();
+    }
+
+    fn get_pkgrel(&self) -> String {
+        todo!();
+    }
+
+    fn get_epoch(&self) -> String {
+        todo!();
+    }
+
+    fn get_pkgdesc(&self) -> String {
+        todo!();
+    }
+
+    fn get_arch(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_url(&self) -> String {
+        todo!();
+    }
+
+    fn get_source(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_checksums(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_install(&self) -> String {
+        todo!();
+    }
+
+    fn get_changelog(&self) -> String {
+        todo!();
+    }
+
+    fn get_license(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_depends(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_makedepends(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_checkdepends(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_optdepends(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_conflicts(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_provides(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_replaces(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_backup(&self) -> Vec<String> {
+        todo!();
+    }
+
+
+    fn get_prepare(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_build(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_check(&self) -> Vec<String> {
+        todo!();
+    }
+
+    fn get_package(&self) -> Vec<String> {
+        todo!();
+    }
+}
