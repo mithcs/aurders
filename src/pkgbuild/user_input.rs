@@ -378,8 +378,6 @@ pub(in super) fn get_backup_input() -> Vec<String> {
 
 /// Gets prepare function from user and returns it
 pub(in super) fn get_prepare_input() -> Vec<String> {
-    println!();
-
     let mut prepare_vec: Vec<String> = Vec::new();
     let mut prepare: String;
     let mut i: u8 = 1;
@@ -404,8 +402,6 @@ pub(in super) fn get_prepare_input() -> Vec<String> {
 
 /// Gets build function from user and returns it
 pub(in super) fn get_build_input() -> Vec<String> {
-    println!();
-
     let mut build_vec: Vec<String> = Vec::new();
     let mut build: String;
     let mut i: u8 = 1;
@@ -430,8 +426,6 @@ pub(in super) fn get_build_input() -> Vec<String> {
 
 /// Gets check function from user and returns it
 pub(in super) fn get_check_input() -> Vec<String> {
-    println!();
-
     let mut check_vec: Vec<String> = Vec::new();
     let mut check: String;
     let mut i: u8 = 1;
@@ -456,8 +450,6 @@ pub(in super) fn get_check_input() -> Vec<String> {
 
 /// Gets package function from user and let
 pub(in super) fn get_package_input() -> Vec<String> {
-    println!();
-
     let mut package_vec: Vec<String> = Vec::new();
     let mut package: String;
     let mut i: u8 = 1;

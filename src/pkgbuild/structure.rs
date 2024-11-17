@@ -14,7 +14,7 @@ pub struct PKGBUILD {
     pub pkgdesc: String,
     pub arch: String,
     pub url: String,
-    pub sources: String,
+    pub source: String,
     pub checksums: String,
     pub install: String,
     pub changelog: String,
@@ -41,30 +41,30 @@ impl fmt::Display for PKGBUILD {
             f,
             concat!(
                 "# Maintainer: {} <{}>\n",
-                "pkgname={:?}\n",
-                "pkgver={:?}\n",
-                "pkgrel={:?}\n",
-                "epoch={:?}\n",
-                "pkgdesc={:?}\n",
-                "arch={:?}\n",
-                "url={:?}\n",
-                "sources={:?}\n",
-                "checksums={:?}\n",
-                "install={:?}\n",
-                "changelog={:?}\n",
-                "license={:?}\n",
-                "depends={:?}\n",
-                "makedepends={:?}\n",
-                "checkdepends={:?}\n",
-                "optdepends={:?}\n",
-                "conflicts={:?}\n",
-                "provides={:?}\n",
-                "replaces={:?}\n",
-                "backup={:?}\n",
-                "prepare() {{\n{:?}\n}}\n",
-                "build() {{\n{:?}\n}}\n",
-                "check() {{\n{:?}\n}}\n",
-                "package() {{\n{:?}\n}}\n"
+                "pkgname={}\n",
+                "pkgver={}\n",
+                "pkgrel={}\n",
+                "epoch={}\n",
+                "pkgdesc='{}'\n",
+                "arch={}\n",
+                "url='{}'\n",
+                "source={}\n",
+                "checksums={}\n",
+                "install='{}'\n",
+                "changelog='{}'\n",
+                "license={}\n",
+                "depends={}\n",
+                "makedepends={}\n",
+                "checkdepends={}\n",
+                "optdepends={}\n",
+                "conflicts={}\n",
+                "provides={}\n",
+                "replaces={}\n",
+                "backup={}\n",
+                "prepare() {{\n{}\n}}\n",
+                "build() {{\n{}\n}}\n",
+                "check() {{\n{}\n}}\n",
+                "package() {{\n{}\n}}\n"
             ),
             self.maintainer_name,
             self.maintainer_email,
@@ -75,7 +75,7 @@ impl fmt::Display for PKGBUILD {
             self.pkgdesc,
             self.arch,
             self.url,
-            self.sources,
+            self.source,
             self.checksums,
             self.install,
             self.changelog,
@@ -100,38 +100,38 @@ impl fmt::Display for PKGBUILD {
 #[allow(dead_code)]
 impl PKGBUILD {
     /// Setter for maintainer_name, and maintainer_email fields
-    fn set_maintainer_details(&mut self) {
+    pub fn set_maintainer_details(&mut self) {
         self.maintainer_name = user_input::get_maintainer_name_input();
         self.maintainer_email = user_input::get_maintainer_email_input();
     }
 
     /// Setter for pkgname field
-    fn set_pkgname(&mut self) {
+    pub fn set_pkgname(&mut self) {
         self.pkgname = user_input::get_pkgname_input();
     }
 
     /// Setter for pkgver field
-    fn set_pkgver(&mut self) {
+    pub fn set_pkgver(&mut self) {
         self.pkgver = user_input::get_pkgver_input();
     }
 
     /// Setter for pkgrel field
-    fn set_pkgrel(&mut self) {
+    pub fn set_pkgrel(&mut self) {
         self.pkgrel = user_input::get_pkgrel_input();
     }
 
     /// Setter for epoch field
-    fn set_epoch(&mut self) {
+    pub fn set_epoch(&mut self) {
         self.epoch = user_input::get_epoch_input();
     }
 
     /// Setter for pkgdesc field
-    fn set_pkgdesc(&mut self) {
+    pub fn set_pkgdesc(&mut self) {
         self.pkgdesc = user_input::get_pkgdesc_input();
     }
 
     /// Setter for arch field
-    fn set_arch(&mut self) {
+    pub fn set_arch(&mut self) {
         let mut architectures: String = String::from("(");
 
         for architecture in user_input::get_arch_input() {
@@ -145,39 +145,62 @@ impl PKGBUILD {
     }
 
     /// Setter for url field
-    fn set_url(&mut self) {
+    pub fn set_url(&mut self) {
         self.url = user_input::get_url_input();
     }
 
-    // TODO: handle whitespaces correctly after \n, for indentation.
-
     /// Setter for sources field
-    fn set_sources(&mut self) {
+    pub fn set_source(&mut self) {
         let mut sources: String = String::from("(");
 
         let mut temp: String;
+        let spacing = " ".repeat(8);  // source + = + (
+
+        let mut is_first_line = true;
         for source in user_input::get_sources_input() {
-            if source.contains("$") {
-                temp = format!("\"{source}\"\n");
-                sources.push_str(&temp);
+            if is_first_line {
+                if source.contains("$") {
+                    temp = format!("\"{source}\"\n");
+                    sources.push_str(&temp);
+                } else {
+                    temp = format!("'{source}'\n");
+                    sources.push_str(&temp);
+                }
+                is_first_line = false;
             } else {
-                temp = format!("'{source}'\n");
-                sources.push_str(&temp);
+                if source.contains("$") {
+                    temp = format!("{spacing}\"{source}\"\n");
+                    sources.push_str(&temp);
+                } else {
+                    temp = format!("{spacing}'{source}'\n");
+                    sources.push_str(&temp);
+                }
             }
         }
 
         sources = sources.trim().to_string();
         sources.push_str(")");
 
-        self.sources = sources;
+        self.source = sources;
     }
 
     /// Setter for checksums field
-    fn set_checksums(&mut self) {
+    pub fn set_checksums(&mut self) {
         let mut checksums: String = String::from("(");
 
+        let mut temp: String;
+        let spacing = " ".repeat(13);
+
+        let mut is_first_line = true;
         for checksum in user_input::get_checksums_input() {
-            checksums = format!("{}'{}' ", checksums, checksum);
+            if is_first_line {
+                temp = format!("'{checksum}'\n");
+                checksums.push_str(&temp);
+                is_first_line = false;
+            } else {
+                temp = format!("{spacing}'{checksum}'\n");
+                checksums.push_str(&temp);
+            }
         }
 
         checksums = checksums.trim().to_string();
@@ -187,17 +210,17 @@ impl PKGBUILD {
     }
 
     /// Setter for install field
-    fn set_install(&mut self) {
+    pub fn set_install(&mut self) {
         self.install = user_input::get_install_input();
     }
 
     /// Setter for changelog field
-    fn set_changelog(&mut self) {
+    pub fn set_changelog(&mut self) {
         self.changelog = user_input::get_changelog_input();
     }
 
     /// Setter for license field
-    fn set_license(&mut self) {
+    pub fn set_license(&mut self) {
         let mut licenses: String = String::from("(");
 
         for license in user_input::get_license_input() {
@@ -211,7 +234,7 @@ impl PKGBUILD {
     }
 
     /// Setter for depends field
-    fn set_depends(&mut self) {
+    pub fn set_depends(&mut self) {
         let mut depends: String = String::from("(");
 
         for depend in user_input::get_depends_input() {
@@ -225,7 +248,7 @@ impl PKGBUILD {
     }
 
     /// Setter for makedepends field
-    fn set_makedepends(&mut self) {
+    pub fn set_makedepends(&mut self) {
         let mut makedepends: String = String::from("(");
 
         for makedepend in user_input::get_makedepends_input() {
@@ -239,7 +262,7 @@ impl PKGBUILD {
     }
 
     /// Setter for checkdepends field
-    fn set_checkdepends(&mut self) {
+    pub fn set_checkdepends(&mut self) {
         let mut checkdepends: String = String::from("(");
 
         for checkdepend in user_input::get_checkdepends_input() {
@@ -253,13 +276,22 @@ impl PKGBUILD {
     }
 
     /// Setter for optdepends field
-    fn set_optdepends(&mut self) {
+    pub fn set_optdepends(&mut self) {
         let mut optdepends: String = String::from("(");
 
         let mut temp: String;
+        let spacing = " ".repeat(12); // optdepends + = + (
+
+        let mut is_first_line = true;
         for optdepend in user_input::get_optdepends_input() {
-            temp = format!("'{optdepend}'\n");
-            optdepends.push_str(&temp);
+            if is_first_line {
+                temp = format!("'{optdepend}'\n");
+                optdepends.push_str(&temp);
+                is_first_line = false;
+            } else {
+                temp = format!("{spacing}'{optdepend}'\n");
+                optdepends.push_str(&temp);
+            }
         }
 
         optdepends = optdepends.trim().to_string();
@@ -269,7 +301,7 @@ impl PKGBUILD {
     }
 
     /// Setter for conflicts field
-    fn set_conflicts(&mut self) {
+    pub fn set_conflicts(&mut self) {
         let mut conflicts: String = String::from("(");
 
         for conflict in user_input::get_conflicts_input() {
@@ -283,7 +315,7 @@ impl PKGBUILD {
     }
 
     /// Setter for provides field
-    fn set_provides(&mut self) {
+    pub fn set_provides(&mut self) {
         let mut provides: String = String::from("(");
 
         for provide in user_input::get_provides_input() {
@@ -297,7 +329,7 @@ impl PKGBUILD {
     }
 
     /// Setter for replaces field
-    fn set_replaces(&mut self) {
+    pub fn set_replaces(&mut self) {
         let mut replaces: String = String::from("(");
 
         for replace in user_input::get_replaces_input() {
@@ -311,13 +343,22 @@ impl PKGBUILD {
     }
 
     /// Setter for backup field
-    fn set_backup(&mut self) {
+    pub fn set_backup(&mut self) {
         let mut backups: String = String::from("(");
 
         let mut temp: String;
+        let spacing = " ".repeat(8); // backup + = + (
+
+        let mut is_first_line = true;
         for backup in user_input::get_backup_input() {
-            temp = format!("'{backup}'\n");
-            backups.push_str(&temp);
+            if is_first_line {
+                temp = format!("'{backup}'\n");
+                backups.push_str(&temp);
+                is_first_line = false;
+            } else {
+                temp = format!("{spacing}'{backup}'\n");
+                backups.push_str(&temp);
+            }
         }
 
         backups = backups.trim().to_string();
@@ -327,7 +368,7 @@ impl PKGBUILD {
     }
 
     /// Setter for prepare field
-    fn set_prepare(&mut self) {
+    pub fn set_prepare(&mut self) {
         let mut prepare: String = String::new();
 
         let mut temp: String;
@@ -340,7 +381,7 @@ impl PKGBUILD {
     }
 
     /// Setter for build field
-    fn set_build(&mut self) {
+    pub fn set_build(&mut self) {
         let mut build: String = String::new();
 
         let mut temp: String;
@@ -353,7 +394,7 @@ impl PKGBUILD {
     }
 
     /// Setter for check field
-    fn set_check(&mut self) {
+    pub fn set_check(&mut self) {
         let mut check: String = String::new();
 
         let mut temp: String;
@@ -366,7 +407,7 @@ impl PKGBUILD {
     }
 
     /// Setter for package field
-    fn set_package(&mut self) {
+    pub fn set_package(&mut self) {
         let mut package: String = String::new();
 
         let mut temp: String;
