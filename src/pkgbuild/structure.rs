@@ -193,7 +193,6 @@ impl PKGBUILD {
 
         let checksum: &str;
         match c_type.as_str() {
-            "MD5" => checksum = "md5sums",
             "SHA256" => checksum = "sha256sums",
             "SHA512" => checksum = "sha512sums",
             "SHA1" => checksum = "sha1sums",
