@@ -4,6 +4,8 @@ use inquire::{min_length, required, Confirm, MultiSelect, Select, Text};
 
 const DELIMETER: &str = ",";
 
+static mut SOURCES_COUNT: u8 = 0;
+
 /// Gets maintainer name and return it
 pub(in super) fn get_maintainer_name_input() -> String {
     return Text::new("Enter maintainer name")
@@ -117,7 +119,6 @@ pub(in super) fn get_url_input() -> String {
 
 /// Gets sums from user and returns it
 pub(in super) fn get_checksums_input() -> Vec<String> {
-    let source_count = 1; // TODO
     let sum_types = vec!["MD5", "SHA256", "SHA512", "SHA1", "SHA224", "SHA386", "B2"];
 
     let sum_type = Select::new("Select type of checksum", sum_types)
@@ -129,17 +130,20 @@ pub(in super) fn get_checksums_input() -> Vec<String> {
     println!("Type -> {sum_type}");
 
     let mut checksums: Vec<String> = Vec::new();
-    for count in 1..=source_count {
-        let should_continue =
-            Confirm::new(format!("Perform integrity check for source {count}").as_str())
+
+    unsafe {
+        for count in 1..SOURCES_COUNT {
+            let should_continue =
+                Confirm::new(format!("Perform integrity check for source {count}").as_str())
                 .with_help_message("Press 'n' to SKIP")
                 .prompt()
                 .unwrap();
 
-        if should_continue {
-            checksums.push("CHECKSUM".to_string())
-        } else {
-            checksums.push("SKIP".to_string())
+            if should_continue {
+                checksums.push("CHECKSUM".to_string())
+            } else {
+                checksums.push("SKIP".to_string())
+            }
         }
     }
 
@@ -159,15 +163,16 @@ pub(in super) fn get_sources_input() -> Vec<String> {
     let mut sources: Vec<String> = Vec::new();
 
     let mut source: String;
-    let mut i: u8 = 0;
 
     loop {
-        i += 1;
-        source = Text::new(format!("Enter source {i}").as_str())
-            .with_validator(if i > 1 { min_length!(0) } else { min_length!(1) })
-            .with_help_message("Must reside in same directory as the PKGBUILD, or be a URL that makepkg can use to download the file.\nPress enter again to exit.")
-            .prompt()
-            .unwrap();
+        unsafe {
+            SOURCES_COUNT += 1; 
+            source = Text::new(format!("Enter source {SOURCES_COUNT}").as_str())
+                .with_validator(if SOURCES_COUNT > 1 { min_length!(0) } else { min_length!(1) })
+                .with_help_message("Must reside in same directory as the PKGBUILD, or be a URL that makepkg can use to download the file.\nPress enter again to exit.")
+                .prompt()
+                .unwrap();
+            }
 
         if source == "" {
             break;
@@ -175,6 +180,7 @@ pub(in super) fn get_sources_input() -> Vec<String> {
             sources.push(source.clone());
         }
     }
+
 
     return sources;
 }
@@ -212,17 +218,23 @@ pub(in super) fn get_license_input() -> Vec<String> {
         .prompt()
         .unwrap();
 
-    // TODO: Implement multiple custom licenses
     for license in licenses {
         match license {
-            "Custom" => licenses_selected.push(
-                Text::new("Enter custom license(s)")
-                    .with_validator(required!())
-                    .prompt()
-                    .unwrap(),
-            ),
+            "Custom" => {
+                let licen = Text::new("Enter custom license(s)")
+                        .with_validator(required!())
+                        .with_help_message("Enter one or more licenses separated by comma (,)")
+                        .prompt()
+                        .unwrap();
+
+                let licen_split = licen.split(DELIMETER);
+
+                for lic in licen_split {
+                    licenses_selected.push(lic.to_string());
+                }
+            },
             _ => licenses_selected.push(license.to_string()),
-        };
+        }
     }
 
     return licenses_selected;

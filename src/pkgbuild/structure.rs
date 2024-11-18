@@ -93,6 +93,7 @@ impl fmt::Display for PKGBUILD {
             self.check,
             self.package
         )?;
+        // TODO: Handle this '?'
         Ok(())
     }
 }
@@ -238,6 +239,9 @@ impl PKGBUILD {
         let mut depends: String = String::from("(");
 
         for depend in user_input::get_depends_input() {
+            if depend == "" {
+                break;
+            }
             depends = format!("{}'{}' ", depends, depend);
         }
 
@@ -252,6 +256,9 @@ impl PKGBUILD {
         let mut makedepends: String = String::from("(");
 
         for makedepend in user_input::get_makedepends_input() {
+            if makedepend == "" {
+                break;
+            }
             makedepends = format!("{}'{}' ", makedepends, makedepend);
         }
 
@@ -266,6 +273,9 @@ impl PKGBUILD {
         let mut checkdepends: String = String::from("(");
 
         for checkdepend in user_input::get_checkdepends_input() {
+            if checkdepend == "" {
+                break;
+            }
             checkdepends = format!("{}'{}' ", checkdepends, checkdepend);
         }
 
@@ -284,6 +294,9 @@ impl PKGBUILD {
 
         let mut is_first_line = true;
         for optdepend in user_input::get_optdepends_input() {
+            if optdepend == "" {
+                break;
+            }
             if is_first_line {
                 temp = format!("'{optdepend}'\n");
                 optdepends.push_str(&temp);
@@ -305,6 +318,9 @@ impl PKGBUILD {
         let mut conflicts: String = String::from("(");
 
         for conflict in user_input::get_conflicts_input() {
+            if conflict == "" {
+                break;
+            }
             conflicts = format!("{}'{}' ", conflicts, conflict);
         }
 
@@ -319,6 +335,9 @@ impl PKGBUILD {
         let mut provides: String = String::from("(");
 
         for provide in user_input::get_provides_input() {
+            if provide == "" {
+                break;
+            }
             provides = format!("{}'{}' ", provides, provide);
         }
 
@@ -333,6 +352,9 @@ impl PKGBUILD {
         let mut replaces: String = String::from("(");
 
         for replace in user_input::get_replaces_input() {
+            if replace == "" {
+                break;
+            }
             replaces = format!("{}'{}' ", replaces, replace);
         }
 
@@ -351,6 +373,9 @@ impl PKGBUILD {
 
         let mut is_first_line = true;
         for backup in user_input::get_backup_input() {
+            if backup == "" {
+                break;
+            }
             if is_first_line {
                 temp = format!("'{backup}'\n");
                 backups.push_str(&temp);
@@ -380,7 +405,7 @@ impl PKGBUILD {
         self.prepare = prepare.trim().to_string();
     }
 
-    /// Setter for build field
+    /// Setter for build function
     pub fn set_build(&mut self) {
         let mut build: String = String::new();
 
@@ -393,7 +418,7 @@ impl PKGBUILD {
         self.build = build.trim().to_string();
     }
 
-    /// Setter for check field
+    /// Setter for check function
     pub fn set_check(&mut self) {
         let mut check: String = String::new();
 
@@ -406,7 +431,7 @@ impl PKGBUILD {
         self.check = check.trim().to_string();
     }
 
-    /// Setter for package field
+    /// Setter for package function
     pub fn set_package(&mut self) {
         let mut package: String = String::new();
 
