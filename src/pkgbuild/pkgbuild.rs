@@ -35,6 +35,7 @@ pub fn set_values(mypkgbuild: &mut structure::PKGBUILD) {
     mypkgbuild.set_arch();
     mypkgbuild.set_url();
     mypkgbuild.set_source();
+    mypkgbuild.set_checksum_type();
     mypkgbuild.set_checksums();
     mypkgbuild.set_install();
     mypkgbuild.set_changelog();

@@ -15,6 +15,7 @@ pub struct PKGBUILD {
     pub arch: String,
     pub url: String,
     pub source: String,
+    pub checksum_type: String,
     pub checksums: String,
     pub install: String,
     pub changelog: String,
@@ -49,7 +50,7 @@ impl fmt::Display for PKGBUILD {
                 "arch={}\n",
                 "url='{}'\n",
                 "source={}\n",
-                "checksums={}\n",
+                "{}={}\n",
                 "install='{}'\n",
                 "changelog='{}'\n",
                 "license={}\n",
@@ -60,7 +61,7 @@ impl fmt::Display for PKGBUILD {
                 "conflicts={}\n",
                 "provides={}\n",
                 "replaces={}\n",
-                "backup={}\n",
+                "backup={}\n\n",
                 "prepare() {{\n{}\n}}\n",
                 "build() {{\n{}\n}}\n",
                 "check() {{\n{}\n}}\n",
@@ -76,6 +77,7 @@ impl fmt::Display for PKGBUILD {
             self.arch,
             self.url,
             self.source,
+            self.checksum_type,
             self.checksums,
             self.install,
             self.changelog,
@@ -155,7 +157,7 @@ impl PKGBUILD {
         let mut sources: String = String::from("(");
 
         let mut temp: String;
-        let spacing = " ".repeat(8);  // source + = + (
+        let spacing = " ".repeat(8); // source + = + (
 
         let mut is_first_line = true;
         for source in user_input::get_sources_input() {
@@ -185,12 +187,30 @@ impl PKGBUILD {
         self.source = sources;
     }
 
+    /// Setter for checksum type
+    pub fn set_checksum_type(&mut self) {
+        let c_type = user_input::get_checksum_type();
+
+        let checksum: &str;
+        match c_type.as_str() {
+            "MD5" => checksum = "md5sums",
+            "SHA256" => checksum = "sha256sums",
+            "SHA512" => checksum = "sha512sums",
+            "SHA1" => checksum = "sha1sums",
+            "SHA224" => checksum = "sha224sums",
+            "SHA386" => checksum = "sha386sums",
+            t => panic!("Got unexpected checksum type: {t}"),
+        };
+
+        self.checksum_type = checksum.to_string();
+    }
+
     /// Setter for checksums field
     pub fn set_checksums(&mut self) {
         let mut checksums: String = String::from("(");
 
         let mut temp: String;
-        let spacing = " ".repeat(13);
+        let spacing = " ".repeat(self.checksum_type.len() + 2);
 
         let mut is_first_line = true;
         for checksum in user_input::get_checksums_input() {
@@ -402,7 +422,7 @@ impl PKGBUILD {
             prepare.push_str(&temp);
         }
 
-        self.prepare = prepare.trim().to_string();
+        self.prepare = prepare.trim_end().to_string();
     }
 
     /// Setter for build function
@@ -415,7 +435,7 @@ impl PKGBUILD {
             build.push_str(&temp);
         }
 
-        self.build = build.trim().to_string();
+        self.build = build.trim_end().to_string();
     }
 
     /// Setter for check function
@@ -428,7 +448,7 @@ impl PKGBUILD {
             check.push_str(&temp);
         }
 
-        self.check = check.trim().to_string();
+        self.check = check.trim_end().to_string();
     }
 
     /// Setter for package function
@@ -441,6 +461,6 @@ impl PKGBUILD {
             package.push_str(&temp);
         }
 
-        self.package = package.trim().to_string();
+        self.package = package.trim_end().to_string();
     }
 }

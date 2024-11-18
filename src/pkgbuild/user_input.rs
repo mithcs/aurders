@@ -5,6 +5,7 @@ use inquire::{min_length, required, Confirm, MultiSelect, Select, Text};
 const DELIMETER: &str = ",";
 
 static mut SOURCES_COUNT: u8 = 0;
+static mut CHECKSUM_TYPE: String = String::new();
 
 /// Gets maintainer name and return it
 pub(in super) fn get_maintainer_name_input() -> String {
@@ -117,27 +118,31 @@ pub(in super) fn get_url_input() -> String {
         .unwrap();
 }
 
+/// Gets checksum type from user and returns it
+pub(in super) fn get_checksum_type_input() {
+    let sum_types = vec!["MD5", "SHA256", "SHA512", "SHA1", "SHA224", "SHA386"];
+
+    unsafe {
+        CHECKSUM_TYPE = Select::new("Select type of checksum", sum_types)
+            .with_help_message("Select which integrity checks to use")
+            .with_vim_mode(true)
+            .prompt()
+            .unwrap()
+            .to_string();
+    }
+}
+
 /// Gets sums from user and returns it
 pub(in super) fn get_checksums_input() -> Vec<String> {
-    let sum_types = vec!["MD5", "SHA256", "SHA512", "SHA1", "SHA224", "SHA386", "B2"];
-
-    let sum_type = Select::new("Select type of checksum", sum_types)
-        .with_help_message("Select which integrity checks to use")
-        .with_vim_mode(true)
-        .prompt()
-        .unwrap();
-
-    println!("Type -> {sum_type}");
-
     let mut checksums: Vec<String> = Vec::new();
 
     unsafe {
         for count in 1..SOURCES_COUNT {
             let should_continue =
                 Confirm::new(format!("Perform integrity check for source {count}").as_str())
-                .with_help_message("Press 'n' to SKIP")
-                .prompt()
-                .unwrap();
+                    .with_help_message("Press 'n' to SKIP")
+                    .prompt()
+                    .unwrap();
 
             if should_continue {
                 checksums.push("CHECKSUM".to_string())
@@ -166,13 +171,13 @@ pub(in super) fn get_sources_input() -> Vec<String> {
 
     loop {
         unsafe {
-            SOURCES_COUNT += 1; 
+            SOURCES_COUNT += 1;
             source = Text::new(format!("Enter source {SOURCES_COUNT}").as_str())
                 .with_validator(if SOURCES_COUNT > 1 { min_length!(0) } else { min_length!(1) })
                 .with_help_message("Must reside in same directory as the PKGBUILD, or be a URL that makepkg can use to download the file.\nPress enter again to exit.")
                 .prompt()
                 .unwrap();
-            }
+        }
 
         if source == "" {
             break;
@@ -180,7 +185,6 @@ pub(in super) fn get_sources_input() -> Vec<String> {
             sources.push(source.clone());
         }
     }
-
 
     return sources;
 }
@@ -222,17 +226,17 @@ pub(in super) fn get_license_input() -> Vec<String> {
         match license {
             "Custom" => {
                 let licen = Text::new("Enter custom license(s)")
-                        .with_validator(required!())
-                        .with_help_message("Enter one or more licenses separated by comma (,)")
-                        .prompt()
-                        .unwrap();
+                    .with_validator(required!())
+                    .with_help_message("Enter one or more licenses separated by comma (,)")
+                    .prompt()
+                    .unwrap();
 
                 let licen_split = licen.split(DELIMETER);
 
                 for lic in licen_split {
                     licenses_selected.push(lic.to_string());
                 }
-            },
+            }
             _ => licenses_selected.push(license.to_string()),
         }
     }
@@ -482,4 +486,20 @@ pub(in super) fn get_package_input() -> Vec<String> {
     }
 
     return package_vec;
+}
+
+/// Returns the sources count
+#[allow(dead_code)]
+pub(in super) fn get_sources_count() -> u8 {
+    unsafe {
+        return SOURCES_COUNT;
+    }
+}
+
+/// Returns the checksum type
+pub(in super) fn get_checksum_type() -> String {
+    get_checksum_type_input();
+    unsafe {
+        return CHECKSUM_TYPE.clone();
+    }
 }
