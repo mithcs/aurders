@@ -11,3 +11,4 @@ repository = "https://github.com/mithcs/aurders"
 
 [dependencies]
 inquire = { version = "0.7.5", features = ["editor"] }
+sha2 = "0.10.8"

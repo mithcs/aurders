@@ -2,6 +2,8 @@ use inquire::list_option::ListOption;
 use inquire::validator::Validation;
 use inquire::{min_length, required, Confirm, MultiSelect, Select, Text};
 
+// use sha2::{Sha256, Sha224, Sha384, Sha512, Digest};
+
 const DELIMETER: &str = ",";
 
 static mut SOURCES_COUNT: u8 = 0;
@@ -120,7 +122,7 @@ pub(in super) fn get_url_input() -> String {
 
 /// Gets checksum type from user and returns it
 pub(in super) fn get_checksum_type_input() {
-    let sum_types = vec!["SHA256", "SHA512", "SHA224", "SHA386"];
+    let sum_types = vec!["SHA256", "SHA512", "SHA224", "SHA384"];
 
     unsafe {
         CHECKSUM_TYPE = Select::new("Select type of checksum", sum_types)

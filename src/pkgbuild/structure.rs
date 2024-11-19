@@ -196,7 +196,7 @@ impl PKGBUILD {
             "SHA256" => checksum = "sha256sums",
             "SHA512" => checksum = "sha512sums",
             "SHA224" => checksum = "sha224sums",
-            "SHA386" => checksum = "sha386sums",
+            "SHA384" => checksum = "sha384sums",
             t => panic!("Got unexpected checksum type: {t}"),
         };
 
