@@ -35,7 +35,7 @@ pub struct PKGBUILD {
     pub package: String,
 }
 
-/// DISPLAY implementation for PKGBUILD structure
+/// Display implementation for PKGBUILD structure
 impl fmt::Display for PKGBUILD {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
@@ -62,10 +62,10 @@ impl fmt::Display for PKGBUILD {
                 "provides={}\n",
                 "replaces={}\n",
                 "backup={}\n\n",
-                "prepare() {{\n{}\n}}\n",
-                "build() {{\n{}\n}}\n",
-                "check() {{\n{}\n}}\n",
-                "package() {{\n{}\n}}\n"
+                "prepare() {{\n{}\n}}\n\n",
+                "build() {{\n{}\n}}\n\n",
+                "check() {{\n{}\n}}\n\n",
+                "package() {{\n{}\n}}"
             ),
             self.maintainer_name,
             self.maintainer_email,
@@ -95,7 +95,7 @@ impl fmt::Display for PKGBUILD {
             self.check,
             self.package
         )?;
-        // TODO: Handle this '?'
+
         Ok(())
     }
 }
@@ -155,8 +155,8 @@ impl PKGBUILD {
     /// Setter for sources field
     pub fn set_source(&mut self) {
         let mut sources: String = String::from("(");
-
         let mut temp: String;
+
         let spacing = " ".repeat(8); // source + = + (
 
         let mut is_first_line = true;
@@ -207,8 +207,8 @@ impl PKGBUILD {
     /// Setter for checksums field
     pub fn set_checksums(&mut self) {
         let mut checksums: String = String::from("(");
-
         let mut temp: String;
+
         let spacing = " ".repeat(self.checksum_type.len() + 2);
 
         let mut is_first_line = true;
@@ -307,8 +307,8 @@ impl PKGBUILD {
     /// Setter for optdepends field
     pub fn set_optdepends(&mut self) {
         let mut optdepends: String = String::from("(");
-
         let mut temp: String;
+
         let spacing = " ".repeat(12); // optdepends + = + (
 
         let mut is_first_line = true;
@@ -386,8 +386,8 @@ impl PKGBUILD {
     /// Setter for backup field
     pub fn set_backup(&mut self) {
         let mut backups: String = String::from("(");
-
         let mut temp: String;
+
         let spacing = " ".repeat(8); // backup + = + (
 
         let mut is_first_line = true;
@@ -414,9 +414,16 @@ impl PKGBUILD {
     /// Setter for prepare field
     pub fn set_prepare(&mut self) {
         let mut prepare: String = String::new();
-
         let mut temp: String;
-        for statement in user_input::get_prepare_input() {
+
+        let prepare_input = user_input::get_prepare_input();
+
+        if prepare_input.len() == 0 {
+            temp = format!("    echo \"Nothing to prepare\"\n");
+            prepare.push_str(&temp);
+        }
+
+        for statement in prepare_input {
             temp = format!("    {statement}\n");
             prepare.push_str(&temp);
         }
@@ -427,9 +434,16 @@ impl PKGBUILD {
     /// Setter for build function
     pub fn set_build(&mut self) {
         let mut build: String = String::new();
-
         let mut temp: String;
-        for statement in user_input::get_build_input() {
+
+        let build_input = user_input::get_build_input();
+
+        if build_input.len() == 0 {
+            temp = format!("    echo \"Nothing to build\"\n");
+            build.push_str(&temp);
+        }
+
+        for statement in build_input {
             temp = format!("    {statement}\n");
             build.push_str(&temp);
         }
@@ -440,9 +454,16 @@ impl PKGBUILD {
     /// Setter for check function
     pub fn set_check(&mut self) {
         let mut check: String = String::new();
-
         let mut temp: String;
-        for statement in user_input::get_check_input() {
+
+        let check_input = user_input::get_check_input();
+
+        if check_input.len() == 0 {
+            temp = format!("    echo \"Nothing to check\"\n");
+            check.push_str(&temp);
+        }
+
+        for statement in check_input {
             temp = format!("    {statement}\n");
             check.push_str(&temp);
         }
@@ -453,9 +474,16 @@ impl PKGBUILD {
     /// Setter for package function
     pub fn set_package(&mut self) {
         let mut package: String = String::new();
-
         let mut temp: String;
-        for statement in user_input::get_package_input() {
+
+        let package_input = user_input::get_package_input();
+
+        if package_input.len() == 0 {
+            temp = format!("    echo \"Nothing to package\"\n");
+            package.push_str(&temp);
+        }
+
+        for statement in package_input {
             temp = format!("    {statement}\n");
             package.push_str(&temp);
         }

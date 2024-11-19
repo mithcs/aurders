@@ -216,8 +216,17 @@ pub(in super) fn get_license_input() -> Vec<String> {
 
     let mut licenses_selected: Vec<String> = Vec::new();
 
+    let validator = |a: &[ListOption<&&str>]| {
+        if a.len() == 0 {
+            return Ok(Validation::Invalid("Select atleast 1 license".into()));
+        } else {
+            return Ok(Validation::Valid);
+        }
+    };
+
     let licenses = MultiSelect::new("Select license(s)", license_options)
         .with_help_message("License(s) that apply to the package")
+        .with_validator(validator)
         .with_vim_mode(true)
         .prompt()
         .unwrap();
