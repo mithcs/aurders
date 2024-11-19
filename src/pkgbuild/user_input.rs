@@ -120,7 +120,7 @@ pub(in super) fn get_url_input() -> String {
 
 /// Gets checksum type from user and returns it
 pub(in super) fn get_checksum_type_input() {
-    let sum_types = vec!["SHA256", "SHA512", "SHA1", "SHA224", "SHA386"];
+    let sum_types = vec!["SHA256", "SHA512", "SHA224", "SHA386"];
 
     unsafe {
         CHECKSUM_TYPE = Select::new("Select type of checksum", sum_types)
@@ -136,7 +136,7 @@ pub(in super) fn get_checksum_type_input() {
 pub(in super) fn get_checksums_input() -> Vec<String> {
     let mut checksums: Vec<String> = Vec::new();
 
-    unsafe {
+    unsafe { // due to SOURCES_COUNT
         for count in 1..SOURCES_COUNT {
             let should_continue =
                 Confirm::new(format!("Perform integrity check for source {count}").as_str())

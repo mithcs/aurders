@@ -195,7 +195,6 @@ impl PKGBUILD {
         match c_type.as_str() {
             "SHA256" => checksum = "sha256sums",
             "SHA512" => checksum = "sha512sums",
-            "SHA1" => checksum = "sha1sums",
             "SHA224" => checksum = "sha224sums",
             "SHA386" => checksum = "sha386sums",
             t => panic!("Got unexpected checksum type: {t}"),
