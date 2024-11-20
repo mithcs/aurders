@@ -1,7 +1,7 @@
 use std::fmt;
 
-use crate::pkgbuild::utils::get_checksum_type;
 use crate::pkgbuild::user_input;
+use crate::pkgbuild::utils::get_checksum_type;
 
 /// Main structure type of PKGBUILD
 #[derive(Default)]
