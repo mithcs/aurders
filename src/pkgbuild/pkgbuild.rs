@@ -15,8 +15,8 @@ pub fn pkgbuild() -> String {
         .unwrap();
 
     match fs::write("PKGBUILD", pkgbuild_) {
-        Ok(_) => println!("Wrote to PKGBUILD"),
-        Err(e) => panic!("Failed to write to file. Got {e}"),
+        Ok(_) => println!("\nWrote to PKGBUILD"),
+        Err(e) => panic!("\nFailed to write to file. Got {e}"),
     }
 
     return mypkgbuild.pkgname;
