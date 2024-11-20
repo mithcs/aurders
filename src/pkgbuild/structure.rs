@@ -106,6 +106,38 @@ impl fmt::Display for PKGBUILD {
 
 #[allow(dead_code)]
 impl PKGBUILD {
+    /// Sets all the value in PKGBUILD
+    pub fn set_values(&mut self) {
+        self.set_maintainer_details();
+        self.set_pkgname();
+        self.set_pkgver();
+        self.set_pkgrel();
+        self.set_epoch();
+        self.set_pkgdesc();
+        self.set_arch();
+        self.set_url();
+        self.set_source();
+        self.set_checksum_type();
+        self.set_checksums();
+        self.set_install();
+        self.set_changelog();
+        self.set_license();
+        self.set_depends();
+        self.set_makedepends();
+        self.set_checkdepends();
+        self.set_optdepends();
+        self.set_conflicts();
+        self.set_provides();
+        self.set_replaces();
+        self.set_options();
+        self.set_backup();
+
+        self.set_prepare();
+        self.set_build();
+        self.set_check();
+        self.set_package();
+    }
+
     /// Setter for maintainer_name, and maintainer_email fields
     pub fn set_maintainer_details(&mut self) {
         self.maintainer_name = user_input::get_maintainer_name_input();
