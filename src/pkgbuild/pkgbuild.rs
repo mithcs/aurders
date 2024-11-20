@@ -4,7 +4,7 @@ use std::fs;
 use crate::pkgbuild::structure;
 
 /// Generates PKGBUILD
-pub fn pkgbuild() {
+pub fn pkgbuild() -> String {
     let mut mypkgbuild = structure::PKGBUILD::default();
     mypkgbuild.set_values();
 
@@ -18,5 +18,7 @@ pub fn pkgbuild() {
         Ok(_) => println!("Wrote to PKGBUILD"),
         Err(e) => panic!("Failed to write to file. Got {e}"),
     }
+
+    return mypkgbuild.pkgname;
 }
 

@@ -1,11 +1,14 @@
 mod pkgbuild;
 mod srcinfo;
+mod git;
 
 use pkgbuild::pkgbuild::pkgbuild;
 use srcinfo::srcinfo;
+use git::git;
 
 fn main() {
-    pkgbuild();
+    let pkgname = pkgbuild();
     srcinfo();
+    git(pkgname);
     println!("Hello World!")
 }

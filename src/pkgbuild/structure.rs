@@ -528,7 +528,7 @@ impl PKGBUILD {
         let package_input = user_input::get_package_input();
 
         if package_input.len() == 0 {
-            temp = format!("    echo \"Nothing to package\"\n");
+            temp = format!("    echo \"Nothing to pack\"\n");
             package.push_str(&temp);
         }
 
