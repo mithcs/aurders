@@ -5,9 +5,10 @@ use crate::pkgbuild::structure;
 
 /// Prints Hello, World
 pub fn pkgbuild() {
-    println!("todo: update checksum field");
-    println!("known issue: 1st line in every func is not indented correctly");
     println!("Hello, World");
+    println!("TODOs:");
+    println!("1. Parse args correctly");
+    println!("2. Increase modularity");
 
     let mut mypkgbuild = structure::PKGBUILD::default();
     set_values(&mut mypkgbuild);
@@ -47,6 +48,7 @@ pub fn set_values(mypkgbuild: &mut structure::PKGBUILD) {
     mypkgbuild.set_conflicts();
     mypkgbuild.set_provides();
     mypkgbuild.set_replaces();
+    mypkgbuild.set_options();
     mypkgbuild.set_backup();
 
     mypkgbuild.set_prepare();

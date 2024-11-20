@@ -28,6 +28,7 @@ pub struct PKGBUILD {
     pub provides: String,
     pub replaces: String,
     pub backup: String,
+    pub options: String,
 
     pub prepare: String,
     pub build: String,
@@ -50,7 +51,7 @@ impl fmt::Display for PKGBUILD {
                 "arch={}\n",
                 "url='{}'\n",
                 "source={}\n",
-                "{}={}\n",
+                "{}={}\n", // checksum
                 "install='{}'\n",
                 "changelog='{}'\n",
                 "license={}\n",
@@ -61,7 +62,8 @@ impl fmt::Display for PKGBUILD {
                 "conflicts={}\n",
                 "provides={}\n",
                 "replaces={}\n",
-                "backup={}\n\n",
+                "backup={}\n",
+                "options={}\n\n",
                 "prepare() {{\n{}\n}}\n\n",
                 "build() {{\n{}\n}}\n\n",
                 "check() {{\n{}\n}}\n\n",
@@ -90,6 +92,7 @@ impl fmt::Display for PKGBUILD {
             self.provides,
             self.replaces,
             self.backup,
+            self.options,
             self.prepare,
             self.build,
             self.check,
@@ -380,6 +383,20 @@ impl PKGBUILD {
         replaces.push_str(")");
 
         self.replaces = replaces;
+    }
+
+    /// Setter for options field
+    pub fn set_options(&mut self) {
+        let mut options: String = String::from("(");
+
+        for opt in user_input::get_options_input() {
+            options = format!("{}'{}' ", options, opt);
+        }
+
+        options = options.trim().to_string();
+        options.push_str(")");
+
+        self.options = options;
     }
 
     /// Setter for backup field

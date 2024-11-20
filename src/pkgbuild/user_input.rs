@@ -1,11 +1,14 @@
+use std::fs;
+
 use inquire::list_option::ListOption;
 use inquire::validator::Validation;
 use inquire::{min_length, required, Confirm, MultiSelect, Select, Text};
 
-// use sha2::{Sha256, Sha224, Sha384, Sha512, Digest};
+use sha2::{Sha256, Sha224, Sha384, Sha512, Digest};
 
 const DELIMETER: &str = ",";
 
+static mut SOURCES: Vec<String> = Vec::new();
 static mut SOURCES_COUNT: u8 = 0;
 static mut CHECKSUM_TYPE: String = String::new();
 
@@ -138,16 +141,16 @@ pub(in super) fn get_checksum_type_input() {
 pub(in super) fn get_checksums_input() -> Vec<String> {
     let mut checksums: Vec<String> = Vec::new();
 
-    unsafe { // due to SOURCES_COUNT
-        for count in 1..SOURCES_COUNT {
+    unsafe { // due to SOURCES, SOURCES_COUNT
+        for (source, count) in SOURCES.iter().zip(1..SOURCES_COUNT) {
             let should_continue =
                 Confirm::new(format!("Perform integrity check for source {count}").as_str())
-                    .with_help_message("Press 'n' to SKIP")
+                    .with_help_message("Press 'n' to SKIP, 'y' to SET")
                     .prompt()
                     .unwrap();
 
             if should_continue {
-                checksums.push("CHECKSUM".to_string())
+                checksums.push(get_checksum(source.clone()));
             } else {
                 checksums.push("SKIP".to_string())
             }
@@ -187,6 +190,8 @@ pub(in super) fn get_sources_input() -> Vec<String> {
             sources.push(source.clone());
         }
     }
+
+    unsafe { SOURCES = sources.clone(); }
 
     return sources;
 }
@@ -383,7 +388,24 @@ pub(in super) fn get_replaces_input() -> Vec<String> {
     return replaces_vec;
 }
 
-// options here
+pub(in super) fn get_options_input() -> Vec<String> {
+    let avail_options = vec!["strip", "docs", "libtool", "staticlibs", "emptydirs", "zipman", "ccache", "distcc", "buildflags", "makeflags", "debug", "lto", "!strip", "!docs", "!libtool", "!staticlibs", "!emptydirs", "!zipman", "!ccache", "!distcc", "!buildflags", "!makeflags", "!debug", "!lto"];
+
+    let mut options_vec: Vec<String> = Vec::new();
+
+    let options = MultiSelect::new("Select target architecture", avail_options)
+        .with_page_size(5)
+        .with_vim_mode(true)
+        .with_help_message("Override makepkg's default behaviour when building packages.")
+        .prompt()
+        .unwrap();
+
+    for opt in options {
+        options_vec.push(opt.to_string());
+    }
+
+    return options_vec;
+}
 
 /// Gets backup from user and returns it
 pub(in super) fn get_backup_input() -> Vec<String> {
@@ -513,4 +535,55 @@ pub(in super) fn get_checksum_type() -> String {
     unsafe {
         return CHECKSUM_TYPE.clone();
     }
+}
+
+/// Returns the checksum of bytes of given source
+fn get_checksum(source: String) -> String {
+    let bytes: Vec<u8>;
+    if source.contains("http") {
+        let response = minreq::get(source)
+            .send().unwrap();
+
+        bytes = response.as_bytes().to_vec();
+    } else {
+        bytes = fs::read(source).unwrap();
+    }
+
+    let hash: String;
+
+    hash = unsafe {
+        match CHECKSUM_TYPE.as_str() {
+            "SHA256" => get_sha256_hash(&bytes),
+            "SHA512" => get_sha512_hash(&bytes),
+            "SHA384" => get_sha384_hash(&bytes),
+            "SHA224" => get_sha224_hash(&bytes),
+            _ => get_sha256_hash(&bytes),
+        }
+    };
+
+    return hash;
+}
+
+/// Returns Sha256 hash of given bytes
+fn get_sha256_hash(bytes: &[u8]) -> String {
+    Sha256::digest(bytes);
+    return format!("{:x}", Sha256::digest(bytes));
+}
+
+/// Returns Sha512 hash of given bytes
+fn get_sha512_hash(bytes: &[u8]) -> String {
+    Sha512::digest(bytes);
+    return format!("{:x}", Sha512::digest(bytes));
+}
+
+/// Returns Sha384 hash of given bytes
+fn get_sha384_hash(bytes: &[u8]) -> String {
+    Sha384::digest(bytes);
+    return format!("{:x}", Sha384::digest(bytes));
+}
+
+/// Returns Sha224 hash of given bytes
+fn get_sha224_hash(bytes: &[u8]) -> String {
+    Sha224::digest(bytes);
+    return format!("{:x}", Sha224::digest(bytes));
 }
