@@ -21,4 +21,3 @@ pub fn pkgbuild() -> String {
 
     return mypkgbuild.pkgname;
 }
-

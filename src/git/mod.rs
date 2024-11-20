@@ -1,4 +1,4 @@
-use inquire::{Confirm, Text, required};
+use inquire::{required, Confirm, Text};
 use std::env::set_current_dir;
 use std::fs;
 use std::process::Command;
@@ -63,22 +63,25 @@ fn add_to_repo(pkgname: &String) {
 }
 
 fn commit_changes() {
-    if !Confirm::new("Do you want to commit changes to git?").prompt().unwrap() {
+    if !Confirm::new("Do you want to commit changes to git?")
+        .prompt()
+        .unwrap()
+    {
         return;
     }
 
     let commit_msg = Text::new("Enter commit message:")
-                    .with_help_message("Commit message for committing changes in git repository")
-                    .with_validator(required!())
-                    .prompt()
-                    .unwrap();
+        .with_help_message("Commit message for committing changes in git repository")
+        .with_validator(required!())
+        .prompt()
+        .unwrap();
 
     let output = Command::new("git")
-                .arg("commit")
-                .arg("-m")
-                .arg(commit_msg)
-                .output()
-                .expect("Failed to commit changes in repository");
+        .arg("commit")
+        .arg("-m")
+        .arg(commit_msg)
+        .output()
+        .expect("Failed to commit changes in repository");
 
     if !output.status.success() {
         eprintln!("git commit failed with status: {}", output.status);
