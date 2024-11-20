@@ -6,9 +6,6 @@ use crate::pkgbuild::structure;
 /// Prints Hello, World
 pub fn pkgbuild() {
     println!("Hello, World");
-    println!("TODOs:");
-    println!("1. Parse args correctly");
-    println!("2. Increase modularity");
 
     let mut mypkgbuild = structure::PKGBUILD::default();
     set_values(&mut mypkgbuild);

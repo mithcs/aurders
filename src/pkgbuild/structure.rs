@@ -1,5 +1,6 @@
 use std::fmt;
 
+use crate::pkgbuild::utils::get_checksum_type;
 use crate::pkgbuild::user_input;
 
 /// Main structure type of PKGBUILD
@@ -192,7 +193,7 @@ impl PKGBUILD {
 
     /// Setter for checksum type
     pub fn set_checksum_type(&mut self) {
-        let c_type = user_input::get_checksum_type();
+        let c_type = get_checksum_type();
 
         let checksum: &str;
         match c_type.as_str() {
